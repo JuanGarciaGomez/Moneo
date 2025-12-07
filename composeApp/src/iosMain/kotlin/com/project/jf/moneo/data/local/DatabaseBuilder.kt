@@ -2,13 +2,26 @@ package com.project.jf.moneo.data.local
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import platform.Foundation.NSHomeDirectory
+import kotlinx.cinterop.ExperimentalForeignApi
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSUserDomainMask
 
-actual object DatabaseBuilder {
-    actual fun build(): RoomDatabase.Builder<AppDatabase> {
-        val dbFilePath = NSHomeDirectory() + "/moneo.db"
-        return Room.databaseBuilder<AppDatabase>(
-            name = dbFilePath
-        )
-    }
+fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+    val dbFilePath = documentDirectory() + "moneo.db"
+    return Room.databaseBuilder<AppDatabase>(
+        name = dbFilePath,
+    )
+}
+
+@OptIn(ExperimentalForeignApi::class)
+private fun documentDirectory(): String {
+    val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
+        directory = NSDocumentDirectory,
+        inDomain = NSUserDomainMask,
+        appropriateForURL = null,
+        create = false,
+        error = null,
+    )
+    return requireNotNull(documentDirectory?.path)
 }
