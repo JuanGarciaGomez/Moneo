@@ -32,3 +32,9 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Room schemas
+/schemas
+
+# macOS
+.DS_Store
