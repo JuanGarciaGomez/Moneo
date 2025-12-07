@@ -1,6 +1,5 @@
 package com.project.jf.moneo.data.local
 
-
 import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -14,6 +13,8 @@ import com.project.jf.moneo.data.local.entity.Category
 import com.project.jf.moneo.data.local.entity.Transaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+
+const val DATABASE_NAME = "moneo.db"
 
 @Database(
     entities = [Account::class, Category::class, Transaction::class],
