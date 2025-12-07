@@ -32,6 +32,8 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.room.sqlite.wrapper)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             // Compose KMP
@@ -52,6 +54,10 @@ kotlin {
 
             // SQLite (iOS compatible)
             implementation(libs.androidx.sqlite.bundled)
+            
+            // Koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -83,10 +89,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    packaging {
-        resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
 }
 
