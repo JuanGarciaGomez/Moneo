@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-fun getDatabaseBuilder(context: Context): RoomDatabase.Builder<AppDatabase> {
+fun getDatabaseBuilder(context: Context): RoomDatabase.Builder<MoneoDatabase> {
     val appContext = context.applicationContext
     val dbFile = appContext.getDatabasePath(DATABASE_NAME)
-    return Room.databaseBuilder<AppDatabase>(
+    return Room.databaseBuilder<MoneoDatabase>(
         context = appContext,
         name = dbFile.absolutePath
     )

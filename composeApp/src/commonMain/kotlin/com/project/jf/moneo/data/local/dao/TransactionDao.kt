@@ -1,32 +1,46 @@
 package com.project.jf.moneo.data.local.dao
 
 import androidx.room.*
+import com.project.jf.moneo.data.local.entity.TransactionEntity
 import kotlinx.coroutines.flow.Flow
-import com.project.jf.moneo.data.local.entity.Transaction
 
 @Dao
 interface TransactionDao {
-    @Query("SELECT * FROM transactions ORDER BY date DESC LIMIT :limit")
-    fun getRecentTransactions(limit: Int = 20): Flow<List<Transaction>>
 
-    @Query("SELECT * FROM transactions WHERE accountId = :accountId ORDER BY date DESC")
-    fun getTransactionsByAccount(accountId: Long): Flow<List<Transaction>>
+    // Inserta una nueva transacción
+    @Insert
+    suspend fun insertTransaction(transaction: TransactionEntity)
 
-    @Query("SELECT * FROM transactions WHERE categoryId = :categoryId ORDER BY date DESC")
-    fun getTransactionsByCategory(categoryId: Long): Flow<List<Transaction>>
+    // Obtiene todas las transacciones asociadas a un periodo de control
+    @Query("SELECT * FROM transactions WHERE controlPeriodId = :periodId ORDER BY date DESC")
+    fun getTransactionsForPeriod(periodId: Long): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate ORDER BY date DESC")
-    fun getTransactionsByDateRange(startDate: Long, endDate: Long): Flow<List<Transaction>>
+    // --- Consultas de Reporte (La clave de la app) ---
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTransaction(transaction: Transaction): Long
+    // Calcula el total de ingresos para un periodo específico
+    @Query("""
+        SELECT SUM(amount) 
+        FROM transactions 
+        WHERE controlPeriodId = :periodId AND type = 'INCOME'
+    """)
+    fun getTotalIncome(periodId: Long): Flow<Double?>
 
-    @Delete
-    suspend fun deleteTransaction(transaction: Transaction)
+    // Calcula el total de gastos para un periodo específico
+    // Usamos el enum 'EXPENSE' que definimos previamente
+    @Query("""
+        SELECT SUM(amount) 
+        FROM transactions 
+        WHERE controlPeriodId = :periodId AND type = 'EXPENSE'
+    """)
+    fun getTotalExpenses(periodId: Long): Flow<Double?>
 
-    @Query("SELECT SUM(amount) FROM transactions WHERE type = 'income' AND date BETWEEN :startDate AND :endDate")
-    fun getTotalIncome(startDate: Long, endDate: Long): Flow<Double?>
-
-    @Query("SELECT SUM(amount) FROM transactions WHERE type = 'expense' AND date BETWEEN :startDate AND :endDate")
-    fun getTotalExpenses(startDate: Long, endDate: Long): Flow<Double?>
+    // Opcional: Obtener los gastos por tarjeta de crédito (simulando "Gastos TC" de tu imagen)
+    @Query("""
+        SELECT SUM(amount) 
+        FROM transactions 
+        WHERE controlPeriodId = :periodId 
+        AND type = 'EXPENSE' 
+        AND paymentMethod = 'Tarjeta' 
+    """)
+    fun getCreditCardExpenses(periodId: Long): Flow<Double?>
 }
