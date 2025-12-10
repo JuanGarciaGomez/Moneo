@@ -1,15 +1,15 @@
 package com.project.jf.moneo.data.local.settings
 
 import android.content.Context
-import com.russhwolf.settings.Settings
+import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.SharedPreferencesSettings
 
 actual class SettingsFactory(private val context: Context) {
-    actual fun createSettings(): Settings {
-        val delegate = context.getSharedPreferences(
-            "app_settings",
+    actual fun createSettings(): ObservableSettings {
+        val sharedPreferences = context.getSharedPreferences(
+            "moneo_prefs",
             Context.MODE_PRIVATE
         )
-        return SharedPreferencesSettings(delegate)
+        return SharedPreferencesSettings(sharedPreferences)
     }
 }
