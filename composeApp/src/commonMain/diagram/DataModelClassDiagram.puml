@@ -1,0 +1,50 @@
+@startuml
+skinparam style strictuml
+
+package "Data Layer (Room)" {
+
+    class ControlPeriodEntity {
+        + id: Long <<PK>>
+        --
+        + name: String
+        + startDate: Long
+        + endDate: Long?
+    }
+    
+    class TransactionEntity {
+        + id: Long <<PK>>
+        + controlPeriodId: Long <<FK>>
+        --
+        + title: String
+        + amount: Double
+        + date: Long
+        + type: TransactionType
+        + category: String
+        + paymentMethod: String
+        + notes: String?
+    }
+
+    enum TransactionType {
+        INCOME
+        EXPENSE
+        PAYMENT
+    }
+
+    interface ControlPeriodDao {
+        + insertPeriod(period): Long
+        + getAllPeriods(): Flow<List<ControlPeriodEntity>>
+    }
+
+    interface TransactionDao {
+        + insertTransaction(tx)
+        + getTransactionsForPeriod(periodId): Flow<List<TransactionEntity>>
+        + getTotalExpenses(periodId): Flow<Double?>
+    }
+
+    ControlPeriodEntity "1" <- "0..*" TransactionEntity : tiene > controlPeriodId
+
+    ControlPeriodDao ..> ControlPeriodEntity
+    TransactionDao ..> TransactionEntity
+    TransactionEntity ..> TransactionType
+}
+@enduml

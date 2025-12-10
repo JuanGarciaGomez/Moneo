@@ -1,0 +1,73 @@
+@startuml
+skinparam style strictuml
+
+title Secuencia Completa: Setup y Transacción Diaria
+
+actor Usuario
+
+box "UI Layer"
+    participant SetupScreen as Setup
+    participant DashboardScreen as Dashboard
+    participant TransactionModal as Modal
+end box
+
+box "Presentation Layer"
+    participant SetupViewModel as SetupVM
+    participant DashboardViewModel as DashVM
+end box
+
+box "Data Layer (Shared)"
+    participant Repository as Repo
+    participant ControlPeriodDao as CP_DAO
+    participant TransactionDao as TX_DAO
+    participant SettingsRepository as Settings
+end box
+
+== Flujo A: Configuración Inicial (Solo la primera vez) ==
+
+autonumber 1
+
+Usuario -> Setup : Click en "Comenzar"
+Setup -> SetupVM : onSetupComplete(name, startDate)
+
+SetupVM -> Repo : setupInitialPeriod(name, startDate)
+Repo -> CP_DAO : insertPeriod(newPeriod)
+CP_DAO --> Repo : newPeriodId: Long
+
+Repo -> Settings : setOnboardingCompleted(true)
+Repo -> Settings : setActivePeriodId(newPeriodId)
+
+Repo --> SetupVM : Success
+SetupVM --> Setup : Navegación Exitosa
+Setup -> Dashboard : Navega
+
+== Flujo B: Operación Diaria (Ingreso de Transacción) ==
+
+autonumber 10
+Usuario -> Dashboard : Click en FAB "+"
+Dashboard -> Modal : Abre Modal Bottom Sheet
+
+Usuario -> Modal : Ingresa Monto, Categoría, Tipo
+Modal -> DashVM : onNewTransaction(data)
+
+DashVM -> Settings : getActivePeriodId()
+Settings --> DashVM : activePeriodId
+
+DashVM -> Repo : insertTransaction(data + activePeriodId)
+Repo -> TX_DAO : insertTransaction(newTxEntity)
+TX_DAO --> Repo : Success
+
+Repo --> DashVM : Success
+DashVM -> Modal : Cierra Modal
+Modal -> Dashboard : Retorna el control
+Dashboard -> Dashboard : **UI se actualiza automáticamente** (debido a Flow/State)
+
+autonumber 20
+Usuario -> Dashboard : Elige ver el Reporte
+Dashboard -> Repo : getSummary(activePeriodId)
+Repo -> TX_DAO : getTotalExpenses(activePeriodId)
+Repo -> TX_DAO : getTotalIncome(activePeriodId)
+TX_DAO --> Repo : Flows<Double?>
+Repo --> Dashboard : Combinar Flows para SummaryState
+
+@enduml

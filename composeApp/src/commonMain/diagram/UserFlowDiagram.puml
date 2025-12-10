@@ -1,0 +1,62 @@
+@startuml
+skinparam style strictuml
+
+title Flujo de Usuario a través de la Aplicación
+
+start
+
+:Inicio de la App;
+
+if (Primera Apertura?) then (Sí)
+  :1. Pantalla Onboarding Rápido;
+  :2. Pantalla Configuración Inicial;
+  :Crear Periodo y Setear Settings;
+else (No)
+  :Leer Settings: activePeriodId;
+endif
+
+:3. Dashboard Principal;
+
+' --- Decisión principal de acciones ---
+if (Acción del usuario?) then (Ingresar Transacción)
+
+  :Abrir 4. Modal de Ingreso Rápido;
+  :Guardar TransactionEntity con activePeriodId;
+  :Actualizar Dashboard;
+
+  note right
+    El Dashboard se actualiza
+    automáticamente vía Flow/State
+  end note
+
+   :3. Dashboard Principal;
+
+elseif (Cambiar de Periodo)
+
+  :Abrir Selector de Periodos;
+  :Usuario elige Periodo;
+  :Guardar nuevo activePeriodId en Settings;
+  :Recargar datos del Dashboard;
+
+   :3. Dashboard Principal;
+
+elseif (Gestionar Periodos/Reportes)
+
+  :Navegar a 5. Pantalla de Reportes/Periodos;
+
+  if (Crear Nuevo Periodo?) then (Sí)
+    :Formulario de Creación;
+    :Insertar ControlPeriodEntity;
+  else (No)
+  endif
+
+  if (Volver al uso Diario?) then (Sí)
+     :3. Dashboard Principal;
+  else (No)
+
+  endif
+
+endif
+
+stop
+@enduml
