@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Moneo</string>
+    <string name="onboarding_title">Saldos Claros, Decisiones Inteligentes.</string>
+    <string name="onboarding_completed">Onboarding completado: %1$s</string>
+    <string name="onboarding_subtitle">Visualiza el estado de tu Periodo de Control activo y entiende dónde gastas más para tomar mejores decisiones.</string>
+    <string name="onboarding_report_info">Podras ver este resumen cada vez que ingreses a la app en la opción REPORTES</string>
+    <string name="onboarding_button_continue">Continuar y Crear mi Primer Periodo</string>
+</resources>

@@ -17,18 +17,52 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.collectLatest
+import moneo.composeapp.generated.resources.Res
+import moneo.composeapp.generated.resources.onboarding_button_continue
+import moneo.composeapp.generated.resources.onboarding_completed
+import moneo.composeapp.generated.resources.onboarding_report_info
+import moneo.composeapp.generated.resources.onboarding_subtitle
+import moneo.composeapp.generated.resources.onboarding_title
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 
 @Composable
 fun Onboarding(viewModel: OnboardingViewModel = koinInject()) {
+
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.effects.collectLatest { effect ->
+            when (effect) {
+                OnboardingEffect.NavigateToFirstPeriod -> {}
+            }
+        }
+    }
+
+    OnboardingScreen(
+        state = uiState,
+        handleIntent = viewModel::handleIntent
+    )
+}
+
+
+@Composable
+fun OnboardingScreen(
+    state: OnboardingState,
+    handleIntent: (intent: OnboardingIntent) -> Unit
+) {
     Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -36,13 +70,18 @@ fun Onboarding(viewModel: OnboardingViewModel = koinInject()) {
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             Text(
-                text = "Saldos Claros, Decisiones Inteligentes.",
+                text = stringResource(Res.string.onboarding_title),
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Start
             )
 
             Text(
-                text = "Visualiza el estado de tu Periodo de Control activo y entiende dónde gastas más para tomar mejores decisiones.",
+                text = stringResource(Res.string.onboarding_completed, state.hasCompletedOnboarding.toString()),
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Text(
+                text = stringResource(Res.string.onboarding_subtitle),
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.Gray,
                 textAlign = TextAlign.Start
@@ -51,7 +90,7 @@ fun Onboarding(viewModel: OnboardingViewModel = koinInject()) {
             BarChartPlaceholder()
 
             Text(
-                text = "Podras ver este resumen cada vez que ingreses a la app en la opción REPORTES ",
+                text = stringResource(Res.string.onboarding_report_info),
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.Gray,
                 textAlign = TextAlign.Start
@@ -59,10 +98,10 @@ fun Onboarding(viewModel: OnboardingViewModel = koinInject()) {
         }
 
         Button(
-            onClick = { },
+            onClick = { handleIntent(OnboardingIntent.ContinueOnboarding) },
             modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
         ) {
-            Text("Continuar y Crear mi Primer Periodo")
+            Text(stringResource(Res.string.onboarding_button_continue))
         }
     }
 }
@@ -101,7 +140,10 @@ fun RowScope.Bar(heightFraction: Float, color: Color) {
 fun OnboardingPreview() {
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            Onboarding(OnboardingViewModel())
+            OnboardingScreen(
+                state = OnboardingState(hasCompletedOnboarding = false),
+                handleIntent = {}
+            )
         }
     }
 }
