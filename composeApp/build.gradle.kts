@@ -48,6 +48,11 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
+            //Settings
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.no.arg)
+            implementation(libs.multiplatform.settings.coroutines)
+
             // Room KMP
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.room.sqlite.wrapper)
