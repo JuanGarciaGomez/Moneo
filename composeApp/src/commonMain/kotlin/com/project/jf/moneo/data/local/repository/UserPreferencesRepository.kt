@@ -1,6 +1,6 @@
 package com.project.jf.moneo.data.local.repository
 
-import com.project.jf.moneo.data.local.settings.SettingsFactory.observableSettings
+import com.project.jf.moneo.data.local.settings.SettingsMoneo.settings
 
 class UserPreferencesRepository() {
 
@@ -9,18 +9,18 @@ class UserPreferencesRepository() {
     }
 
     fun saveHasCompletedOnboarding(hasCompletedOnboarding: Boolean) {
-        observableSettings.putBoolean(HAS_COMPLETED_ONBOARDING, hasCompletedOnboarding)
+        settings.putBoolean(HAS_COMPLETED_ONBOARDING, hasCompletedOnboarding)
     }
 
     fun getHasCompletedOnboarding(): Boolean {
-        return observableSettings.getBoolean(HAS_COMPLETED_ONBOARDING, false)
+        return settings.getBoolean(HAS_COMPLETED_ONBOARDING, false)
     }
 
     fun clearAll() {
-        observableSettings.clear()
+        settings.clear()
     }
 
     fun removeHasCompletedOnboarding() {
-        observableSettings.remove(HAS_COMPLETED_ONBOARDING)
+        settings.remove(HAS_COMPLETED_ONBOARDING)
     }
 }
