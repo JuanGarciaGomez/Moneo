@@ -44,9 +44,12 @@ fun Onboarding(viewModel: OnboardingViewModel = koinInject()) {
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(key1 = Unit) {
+        viewModel.hasCompletedOnboarding()
         viewModel.effects.collectLatest { effect ->
             when (effect) {
-                OnboardingEffect.NavigateToFirstPeriod -> {}
+                OnboardingEffect.NavigateToFirstPeriod -> {
+                    println("JUAN")
+                }
             }
         }
     }
