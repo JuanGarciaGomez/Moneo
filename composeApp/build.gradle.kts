@@ -1,3 +1,4 @@
+
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -43,6 +44,9 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
+            // Navigation
+            implementation(libs.androidx.navigation.compose)
 
             // Lifecycle
             implementation(libs.androidx.lifecycle.viewmodelCompose)
