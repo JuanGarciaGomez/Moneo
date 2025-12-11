@@ -24,12 +24,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collectLatest
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.onboarding_button_continue
 import moneo.composeapp.generated.resources.onboarding_completed
+import moneo.composeapp.generated.resources.onboarding_current_period
+import moneo.composeapp.generated.resources.onboarding_distribution_title
 import moneo.composeapp.generated.resources.onboarding_report_info
 import moneo.composeapp.generated.resources.onboarding_subtitle
 import moneo.composeapp.generated.resources.onboarding_title
@@ -79,7 +82,10 @@ fun OnboardingScreen(
             )
 
             Text(
-                text = stringResource(Res.string.onboarding_completed, state.hasCompletedOnboarding.toString()),
+                text = stringResource(
+                    Res.string.onboarding_completed,
+                    state.hasCompletedOnboarding.toString()
+                ),
                 style = MaterialTheme.typography.bodyLarge
             )
 
@@ -111,17 +117,36 @@ fun OnboardingScreen(
 
 @Composable
 fun BarChartPlaceholder() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(250.dp),
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        Bar(heightFraction = 0.1f, color = MaterialTheme.colorScheme.primary)
-        Bar(heightFraction = 0.9f, color = MaterialTheme.colorScheme.secondary)
-        Bar(heightFraction = 0.4f, color = MaterialTheme.colorScheme.tertiary)
-        Bar(heightFraction = 0.7f, color = MaterialTheme.colorScheme.primaryContainer)
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(Res.string.onboarding_distribution_title),
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            )
+            Text(
+                text = stringResource(Res.string.onboarding_current_period),
+                textAlign = TextAlign.Start,
+                color = Color.Gray,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Bar(heightFraction = 0.1f, color = MaterialTheme.colorScheme.primary)
+            Bar(heightFraction = 0.9f, color = MaterialTheme.colorScheme.secondary)
+            Bar(heightFraction = 0.4f, color = MaterialTheme.colorScheme.tertiary)
+            Bar(heightFraction = 0.7f, color = MaterialTheme.colorScheme.primaryContainer)
+        }
     }
 }
 
