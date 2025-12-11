@@ -19,10 +19,9 @@ class OnboardingViewModel(
 
     fun hasCompletedOnboarding() {
         viewModelScope.launch {
-            userPreferencesRepository.hasCompletedOnboardingFlow.collect { hasCompletedOnboarding ->
-                if (hasCompletedOnboarding){
-                    effects.emit(OnboardingEffect.NavigateToFirstPeriod)
-                }
+            val hasCompletedOnboarding = userPreferencesRepository.getHasCompletedOnboarding()
+            if (hasCompletedOnboarding) {
+                effects.emit(OnboardingEffect.NavigateToFirstPeriod)
             }
         }
     }
@@ -32,6 +31,7 @@ class OnboardingViewModel(
             OnboardingIntent.ContinueOnboarding -> {
                 viewModelScope.launch {
                     userPreferencesRepository.saveHasCompletedOnboarding(true)
+                    effects.emit(OnboardingEffect.NavigateToFirstPeriod)
                 }
             }
         }
