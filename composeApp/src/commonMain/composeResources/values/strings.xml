@@ -1,10 +1,27 @@
 <resources>
+    <!-- General-->
+    <string name="today">Hoy</string>
     <string name="app_name">Moneo</string>
-    <string name="onboarding_title">Saldos Claros, Decisiones Inteligentes.</string>
-    <string name="onboarding_completed">Onboarding completado: %1$s</string>
-    <string name="onboarding_subtitle">Visualiza el estado de tu Periodo de Control activo y entiende dónde gastas más para tomar mejores decisiones.</string>
-    <string name="onboarding_distribution_title">Distribución de gastos</string>
-    <string name="onboarding_current_period">Periodo actual</string>
-    <string name="onboarding_report_info">Podras ver este resumen cada vez que ingreses a la app en la opción REPORTES</string>
-    <string name="onboarding_button_continue">Continuar y Crear mi Primer Periodo</string>
+
+    <!-- OnboardingRender-->
+    <string name="ob_title">Saldos Claros, Decisiones Inteligentes.</string>
+    <string name="ob_completed">Onboarding completado: %1$s</string>
+    <string name="ob_subtitle">Visualiza el estado de tu Periodo de Control activo y entiende dónde gastas más para tomar mejores decisiones.</string>
+    <string name="ob_distribution_title">Distribución de gastos</string>
+    <string name="ob_current_period">Periodo actual</string>
+    <string name="ob_report_info">Podras ver este resumen cada vez que ingreses a la app en la opción REPORTES</string>
+    <string name="ob_button_continue">Continuar y Crear mi Primer Periodo</string>
+
+    <!-- First Period -->
+    <string name="ob_initial_period">Periodo inicial</string>
+    <string name="ob_initial_period_description">Empecemos: Crea tu Primer Periodo de Control</string>
+    <string name="ob_initial_period_alternative_description">Configura el primer periodo para empezar a registrar tus ingresos y gastos.</string>
+    <string name="ob_initial_period_name">Nombre del periodo</string>
+    <string name="ob_initial_period_name_example">Gastos Personales</string>
+    <string name="ob_initial_period_name_option">Puedes cambiar el nombre más adelante</string>
+    <string name="ob_initial_period_start_date">Fecha de inicio</string>
+    <string name="ob_initial_period_start_date_example">1 de enero 2026</string>
+    <string name="ob_initial_period_change">Cambiar</string>
+    <string name="ob_initial_period_button_start">Comenzar</string>
+
 </resources>

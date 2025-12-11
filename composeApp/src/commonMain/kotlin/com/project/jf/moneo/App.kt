@@ -7,7 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.project.jf.moneo.presentation.onboarding.Onboarding
+import com.project.jf.moneo.presentation.onboarding.OnboardingRender
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -16,7 +16,7 @@ fun App() {
     MaterialTheme {
         Scaffold { innerPadding ->
             Surface(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-                Onboarding()
+                OnboardingRender()
             }
         }
     }

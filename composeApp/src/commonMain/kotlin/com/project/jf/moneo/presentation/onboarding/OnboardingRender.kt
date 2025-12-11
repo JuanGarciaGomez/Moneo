@@ -29,20 +29,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collectLatest
 import moneo.composeapp.generated.resources.Res
-import moneo.composeapp.generated.resources.onboarding_button_continue
-import moneo.composeapp.generated.resources.onboarding_completed
-import moneo.composeapp.generated.resources.onboarding_current_period
-import moneo.composeapp.generated.resources.onboarding_distribution_title
-import moneo.composeapp.generated.resources.onboarding_report_info
-import moneo.composeapp.generated.resources.onboarding_subtitle
-import moneo.composeapp.generated.resources.onboarding_title
+import moneo.composeapp.generated.resources.ob_button_continue
+import moneo.composeapp.generated.resources.ob_completed
+import moneo.composeapp.generated.resources.ob_current_period
+import moneo.composeapp.generated.resources.ob_distribution_title
+import moneo.composeapp.generated.resources.ob_report_info
+import moneo.composeapp.generated.resources.ob_subtitle
+import moneo.composeapp.generated.resources.ob_title
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 
 @Composable
-fun Onboarding(viewModel: OnboardingViewModel = koinInject()) {
+fun OnboardingRender(viewModel: OnboardingViewModel = koinInject()) {
 
     val uiState by viewModel.uiState.collectAsState()
 
@@ -76,21 +76,21 @@ fun OnboardingScreen(
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             Text(
-                text = stringResource(Res.string.onboarding_title),
+                text = stringResource(Res.string.ob_title),
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Start
             )
 
             Text(
                 text = stringResource(
-                    Res.string.onboarding_completed,
+                    Res.string.ob_completed,
                     state.hasCompletedOnboarding.toString()
                 ),
                 style = MaterialTheme.typography.bodyLarge
             )
 
             Text(
-                text = stringResource(Res.string.onboarding_subtitle),
+                text = stringResource(Res.string.ob_subtitle),
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.Gray,
                 textAlign = TextAlign.Start
@@ -99,7 +99,7 @@ fun OnboardingScreen(
             BarChartPlaceholder()
 
             Text(
-                text = stringResource(Res.string.onboarding_report_info),
+                text = stringResource(Res.string.ob_report_info),
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.Gray,
                 textAlign = TextAlign.Start
@@ -110,7 +110,7 @@ fun OnboardingScreen(
             onClick = { handleIntent(OnboardingIntent.ContinueOnboarding) },
             modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
         ) {
-            Text(stringResource(Res.string.onboarding_button_continue))
+            Text(stringResource(Res.string.ob_button_continue))
         }
     }
 }
@@ -124,12 +124,12 @@ fun BarChartPlaceholder() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(Res.string.onboarding_distribution_title),
+                text = stringResource(Res.string.ob_distribution_title),
                 textAlign = TextAlign.Start,
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             )
             Text(
-                text = stringResource(Res.string.onboarding_current_period),
+                text = stringResource(Res.string.ob_current_period),
                 textAlign = TextAlign.Start,
                 color = Color.Gray,
                 style = MaterialTheme.typography.bodyMedium,
