@@ -27,6 +27,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import com.project.jf.moneo.presentation.first_period.FirstPeriodScreen
 import kotlinx.coroutines.flow.collectLatest
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.ob_button_continue
@@ -44,6 +47,7 @@ import org.koin.compose.koinInject
 @Composable
 fun OnboardingRender(viewModel: OnboardingViewModel = koinInject()) {
 
+    val navigator = LocalNavigator.currentOrThrow
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(key1 = Unit) {
@@ -51,7 +55,7 @@ fun OnboardingRender(viewModel: OnboardingViewModel = koinInject()) {
         viewModel.effects.collectLatest { effect ->
             when (effect) {
                 OnboardingEffect.NavigateToFirstPeriod -> {
-                    println("JUAN")
+                    navigator.push(FirstPeriodScreen)
                 }
             }
         }
