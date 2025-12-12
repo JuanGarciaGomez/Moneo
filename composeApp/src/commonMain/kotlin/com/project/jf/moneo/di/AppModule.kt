@@ -1,14 +1,14 @@
 package com.project.jf.moneo.di
 
 import com.project.jf.moneo.data.local.repository.UserPreferencesRepository
-import com.project.jf.moneo.presentation.first_period.FirstPeriodViewModel
-import com.project.jf.moneo.presentation.onboarding.OnboardingViewModel
+import com.project.jf.moneo.presentation.first_period.FirstPeriodScreenModel
+import com.project.jf.moneo.presentation.onboarding.OnboardingScreenModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 val commonModule = module {
-    factory { OnboardingViewModel(get()) }
-    factory { FirstPeriodViewModel() }
+    factory { OnboardingScreenModel(get()) }
+    factory { FirstPeriodScreenModel() }
     single { UserPreferencesRepository() }
 }
 
