@@ -1,6 +1,7 @@
 package com.project.jf.moneo.presentation.first_period
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,7 +37,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun FirstPeriodScreen(viewModel: FirstPeriodViewModel = koinViewModel()) {
+fun FirstPeriodScreen(
+    viewModel: FirstPeriodViewModel = koinViewModel(),
+    onNavigateToFirstPeriod: () -> Unit
+) {
     Box(
         modifier = Modifier.fillMaxSize().padding(16.dp),
     ) {
@@ -50,6 +54,7 @@ fun FirstPeriodScreen(viewModel: FirstPeriodViewModel = koinViewModel()) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
+                    modifier = Modifier.clickable { onNavigateToFirstPeriod() },
                     painter = painterResource(Res.drawable.arrow_back),
                     contentDescription = null
                 )
@@ -119,7 +124,9 @@ fun FirstPeriodScreen(viewModel: FirstPeriodViewModel = koinViewModel()) {
 fun OnboardingPreview() {
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            FirstPeriodScreen()
+            FirstPeriodScreen{
+
+            }
         }
     }
 }

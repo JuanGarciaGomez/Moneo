@@ -39,13 +39,15 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun OnboardingScreen(viewModel: OnboardingViewModel = koinViewModel()) {
+fun OnboardingScreen(
+    viewModel: OnboardingViewModel = koinViewModel(),
+    onNavigateToFirstPeriod: () -> Unit
+) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                OnboardingEffect.NavigateToFirstPeriod -> {
-                }
+                OnboardingEffect.NavigateToFirstPeriod -> onNavigateToFirstPeriod()
             }
         }
     }
