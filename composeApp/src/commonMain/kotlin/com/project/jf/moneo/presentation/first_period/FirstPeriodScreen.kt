@@ -22,11 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import com.project.jf.moneo.presentation.onboarding.OnboardingScreenModel
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.arrow_back
 import moneo.composeapp.generated.resources.ob_initial_period
@@ -39,100 +34,91 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-object FirstPeriodScreen : Screen {
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val screenModel = getScreenModel<OnboardingScreenModel>()
-        FirstPeriodScreen()
-    }
-
-    @Composable
-    fun FirstPeriodScreen() {
-        Box(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+@Composable
+fun FirstPeriodScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalArrangement = Arrangement.spacedBy(32.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(32.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.arrow_back),
-                        contentDescription = null
-                    )
-                    Text(
-                        text = stringResource(Res.string.ob_initial_period),
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = Color.White,
-                            shape = MaterialTheme.shapes.medium
-                        ).padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    Text(
-                        text = stringResource(Res.string.ob_initial_period_description),
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-
-                    Text(
-                        text = stringResource(Res.string.ob_initial_period_alternative_description),
-                        color = Color.Gray,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = Color.White,
-                            shape = MaterialTheme.shapes.medium
-                        ).padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    OutlinedTextField(
-                        value = "",
-                        onValueChange = { "" },
-                        label = { Text(text = stringResource(Res.string.ob_initial_period_name)) },
-                        supportingText = { Text(text = stringResource(Res.string.ob_initial_period_name_option)) },
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
-                        singleLine = true
-                    )
-                }
+                Icon(
+                    painter = painterResource(Res.drawable.arrow_back),
+                    contentDescription = null
+                )
+                Text(
+                    text = stringResource(Res.string.ob_initial_period),
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                )
             }
 
-            Button(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color.White,
+                        shape = MaterialTheme.shapes.medium
+                    ).padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                Text(stringResource(Res.string.ob_initial_period_button_start))
+                Text(
+                    text = stringResource(Res.string.ob_initial_period_description),
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+
+                Text(
+                    text = stringResource(Res.string.ob_initial_period_alternative_description),
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color.White,
+                        shape = MaterialTheme.shapes.medium
+                    ).padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = { "" },
+                    label = { Text(text = stringResource(Res.string.ob_initial_period_name)) },
+                    supportingText = { Text(text = stringResource(Res.string.ob_initial_period_name_option)) },
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
+                    singleLine = true
+                )
             }
         }
+
+        Button(
+            onClick = {},
+            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
+        ) {
+            Text(stringResource(Res.string.ob_initial_period_button_start))
+        }
     }
+}
 
 
-    @Preview
-    @Composable
-    fun OnboardingPreview() {
-        MaterialTheme {
-            Surface(modifier = Modifier.fillMaxSize()) {
-                FirstPeriodScreen()
-            }
+@Preview
+@Composable
+fun OnboardingPreview() {
+    MaterialTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            FirstPeriodScreen()
         }
     }
 }

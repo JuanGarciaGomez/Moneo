@@ -18,8 +18,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,11 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import com.project.jf.moneo.presentation.first_period.FirstPeriodScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.ob_button_continue
 import moneo.composeapp.generated.resources.ob_completed
@@ -43,28 +37,22 @@ import moneo.composeapp.generated.resources.ob_title
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-object OnboardingScreen : Screen {
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val screenModel = getScreenModel<OnboardingScreenModel>()
-        val uiState by screenModel.uiState.collectAsState()
-
-        LaunchedEffect(Unit) {
-            screenModel.effects.collect { effect ->
-                when (effect) {
-                    OnboardingEffect.NavigateToFirstPeriod -> {
-                        navigator.push(FirstPeriodScreen)
-                    }
+@Composable
+fun OnboardingScreen(viewModel: OnboardingViewModel) {
+    val state = viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                OnboardingEffect.NavigateToFirstPeriod -> {
                 }
             }
         }
-
-        OnboardingContent(
-            state = uiState,
-            handleIntent = screenModel::handleIntent
-        )
     }
+
+    OnboardingContent(
+        state = state.value,
+        handleIntent = viewModel::handleIntent
+    )
 }
 
 
