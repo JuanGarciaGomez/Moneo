@@ -33,9 +33,10 @@ import moneo.composeapp.generated.resources.ob_initial_period_name_option
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun FirstPeriodScreen() {
+fun FirstPeriodScreen(viewModel: FirstPeriodViewModel = koinViewModel()) {
     Box(
         modifier = Modifier.fillMaxSize().padding(16.dp),
     ) {

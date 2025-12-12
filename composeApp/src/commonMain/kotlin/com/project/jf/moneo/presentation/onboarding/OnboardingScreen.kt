@@ -36,9 +36,10 @@ import moneo.composeapp.generated.resources.ob_subtitle
 import moneo.composeapp.generated.resources.ob_title
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun OnboardingScreen(viewModel: OnboardingViewModel) {
+fun OnboardingScreen(viewModel: OnboardingViewModel = koinViewModel()) {
     val state = viewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
