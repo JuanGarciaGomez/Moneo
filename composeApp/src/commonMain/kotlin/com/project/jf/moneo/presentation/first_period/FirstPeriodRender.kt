@@ -36,7 +36,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 @Composable
-fun FirstPeriod(viewModel: FirstPeriodViewModel = koinInject()) {
+fun FirstPeriodRender(viewModel: FirstPeriodViewModel = koinInject()) {
     FirstPeriodScreen()
 }
 

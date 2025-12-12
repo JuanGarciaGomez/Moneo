@@ -46,7 +46,10 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             // Navigation
-            implementation(libs.androidx.navigation.compose)
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.screenmodel)
+            implementation(libs.voyager.transitions)
+            implementation(libs.voyager.koin)
 
             // Lifecycle
             implementation(libs.androidx.lifecycle.viewmodelCompose)
