@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 kotlin {
@@ -70,7 +71,8 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
 
             //Serialization
-            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.serialization.core)
+
 
             //DateTime
             implementation(libs.kotlinx.datetime)
