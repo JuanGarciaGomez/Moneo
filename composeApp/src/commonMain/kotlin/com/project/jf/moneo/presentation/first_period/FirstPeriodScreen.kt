@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.project.jf.moneo.presentation.components.DatePickerField
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.LocalDate
 import moneo.composeapp.generated.resources.Res
@@ -100,11 +101,8 @@ private fun FirstPeriodContent(
             FormCard(
                 periodName = state.periodName,
                 startDate = state.startDate,
-                endDate = state.endDate,
-                errorMessage = state.errorMessage,
                 onPeriodNameChange = { onIntent(FirstPeriodIntent.UpdatePeriodName(it)) },
                 onStartDateChange = { onIntent(FirstPeriodIntent.UpdateStartDate(it)) },
-                onEndDateChange = { onIntent(FirstPeriodIntent.UpdateEndDate(it)) }
             )
         }
     }
@@ -168,11 +166,8 @@ private fun DescriptionCard() {
 private fun FormCard(
     periodName: String,
     startDate: LocalDate,
-    endDate: LocalDate?,
-    errorMessage: String?,
     onPeriodNameChange: (String) -> Unit,
     onStartDateChange: (LocalDate) -> Unit,
-    onEndDateChange: (LocalDate?) -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -204,18 +199,11 @@ private fun FormCard(
                 isError = periodName.isBlank()
             )
 
-            //Implementar DataPicker
-
-
-
-            if (errorMessage != null) {
-                Text(
-                    text = errorMessage,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-            }
+            DatePickerField(
+                label = "Fecha de inicio",
+                selectedDate = startDate,
+                onDateSelected = onStartDateChange
+            )
         }
     }
 }
@@ -314,7 +302,6 @@ fun FirstPeriodErrorPreview() {
             FirstPeriodContent(
                 state = FirstPeriodState(
                     periodName = "Mi periodo",
-                    errorMessage = "La fecha final debe ser posterior a la fecha inicial"
                 )
             )
         }

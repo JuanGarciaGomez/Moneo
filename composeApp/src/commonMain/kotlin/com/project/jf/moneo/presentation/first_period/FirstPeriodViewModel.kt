@@ -22,7 +22,6 @@ class FirstPeriodViewModel : ViewModel() {
         when (intent) {
             is FirstPeriodIntent.UpdatePeriodName -> updatePeriodName(intent.name)
             is FirstPeriodIntent.UpdateStartDate -> updateStartDate(intent.date)
-            is FirstPeriodIntent.UpdateEndDate -> updateEndDate(intent.date)
             FirstPeriodIntent.SavePeriod -> savePeriod()
             FirstPeriodIntent.NavigateBack -> navigateBack()
         }
@@ -32,7 +31,7 @@ class FirstPeriodViewModel : ViewModel() {
         _state.update {
             it.copy(
                 periodName = name,
-                canProceed = name.isNotBlank() && (it.errorMessage == null)
+                canProceed = name.isNotBlank()
             )
         }
     }
@@ -42,20 +41,10 @@ class FirstPeriodViewModel : ViewModel() {
         validateDates()
     }
 
-    private fun updateEndDate(date: LocalDate?) {
-        _state.update { it.copy(endDate = date) }
-        validateDates()
-    }
-
     private fun validateDates() {
         _state.update { currentState ->
-            val isValid = currentState.endDate?.let { end ->
-                end >= currentState.startDate
-            } ?: true
-
             currentState.copy(
-                errorMessage = if (!isValid) "La fecha final debe ser posterior a la fecha inicial" else null,
-                canProceed = currentState.periodName.isNotBlank() && isValid
+                canProceed = currentState.periodName.isNotBlank()
             )
         }
     }

@@ -31,6 +31,9 @@ kotlin {
     }
 
     sourceSets {
+        all{
+            languageSettings.optIn("androidx.compose.material3.ExperimentalMaterial3Api")
+        }
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
