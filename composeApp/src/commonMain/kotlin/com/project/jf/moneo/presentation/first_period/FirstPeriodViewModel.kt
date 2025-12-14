@@ -31,7 +31,8 @@ class FirstPeriodViewModel : ViewModel() {
         _state.update {
             it.copy(
                 periodName = name,
-                canProceed = name.isNotBlank()
+                canProceed = name.isNotBlank(),
+                periodNameError = name.isBlank()
             )
         }
     }

@@ -101,6 +101,7 @@ private fun FirstPeriodContent(
             FormCard(
                 periodName = state.periodName,
                 startDate = state.startDate,
+                periodNameError = state.periodNameError,
                 onPeriodNameChange = { onIntent(FirstPeriodIntent.UpdatePeriodName(it)) },
                 onStartDateChange = { onIntent(FirstPeriodIntent.UpdateStartDate(it)) },
             )
@@ -165,6 +166,7 @@ private fun DescriptionCard() {
 @Composable
 private fun FormCard(
     periodName: String,
+    periodNameError: Boolean,
     startDate: LocalDate,
     onPeriodNameChange: (String) -> Unit,
     onStartDateChange: (LocalDate) -> Unit,
@@ -196,7 +198,7 @@ private fun FormCard(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                isError = periodName.isBlank()
+                isError = periodNameError
             )
 
             DatePickerField(

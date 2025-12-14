@@ -9,6 +9,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 data class FirstPeriodState(
     val periodName: String = "",
+    val periodNameError : Boolean = false,
     val startDate: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
     val isLoading: Boolean = false,
     val canProceed: Boolean = false
