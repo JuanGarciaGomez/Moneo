@@ -1,28 +1,35 @@
 package com.project.jf.moneo.presentation.first_period
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.datetime.LocalDate
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.arrow_back
 import moneo.composeapp.generated.resources.ob_initial_period
@@ -39,81 +46,218 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun FirstPeriodScreen(
     viewModel: FirstPeriodViewModel = koinViewModel(),
-    onNavigateToFirstPeriod: () -> Unit
+    onNavigateBack: () -> Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-    ) {
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.effects.collectLatest { effect ->
+            when (effect) {
+                FirstPeriodEffect.NavigateBack -> onNavigateBack()
+                FirstPeriodEffect.NavigateToNextScreen -> {
+                    // TODO: Navegar a la siguiente pantalla
+                    // Por ahora solo volvemos atrás
+                    onNavigateBack()
+                }
+            }
+        }
+    }
+
+    FirstPeriodContent(
+        state = state,
+        onIntent = viewModel::handleIntent
+    )
+}
+
+@Composable
+private fun FirstPeriodContent(
+    state: FirstPeriodState,
+    onIntent: (FirstPeriodIntent) -> Unit = {}
+) {
+    Scaffold(
+        topBar = {
+            FirstPeriodTopBar(
+                onNavigateBack = { onIntent(FirstPeriodIntent.NavigateBack) }
+            )
+        },
+        bottomBar = {
+            FirstPeriodBottomBar(
+                enabled = state.canProceed && !state.isLoading,
+                isLoading = state.isLoading,
+                onClick = { onIntent(FirstPeriodIntent.SavePeriod) }
+            )
+        }
+    ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(32.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            DescriptionCard()
+
+            FormCard(
+                periodName = state.periodName,
+                startDate = state.startDate,
+                endDate = state.endDate,
+                errorMessage = state.errorMessage,
+                onPeriodNameChange = { onIntent(FirstPeriodIntent.UpdatePeriodName(it)) },
+                onStartDateChange = { onIntent(FirstPeriodIntent.UpdateStartDate(it)) },
+                onEndDateChange = { onIntent(FirstPeriodIntent.UpdateEndDate(it)) }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FirstPeriodTopBar(
+    onNavigateBack: () -> Unit
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = stringResource(Res.string.ob_initial_period),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = onNavigateBack) {
                 Icon(
-                    modifier = Modifier.clickable { onNavigateToFirstPeriod() },
                     painter = painterResource(Res.drawable.arrow_back),
-                    contentDescription = null
-                )
-                Text(
-                    text = stringResource(Res.string.ob_initial_period),
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = Color.White,
-                        shape = MaterialTheme.shapes.medium
-                    ).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                Text(
-                    text = stringResource(Res.string.ob_initial_period_description),
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                )
-
-                Text(
-                    text = stringResource(Res.string.ob_initial_period_alternative_description),
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = Color.White,
-                        shape = MaterialTheme.shapes.medium
-                    ).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = { "" },
-                    label = { Text(text = stringResource(Res.string.ob_initial_period_name)) },
-                    supportingText = { Text(text = stringResource(Res.string.ob_initial_period_name_option)) },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
-                    singleLine = true
+                    contentDescription = "Volver"
                 )
             }
         }
+    )
+}
 
-        Button(
-            onClick = {},
-            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
+@Composable
+private fun DescriptionCard() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(stringResource(Res.string.ob_initial_period_button_start))
+            Text(
+                text = stringResource(Res.string.ob_initial_period_description),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+            )
+
+            Text(
+                text = stringResource(Res.string.ob_initial_period_alternative_description),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
+        }
+    }
+}
+
+@Composable
+private fun FormCard(
+    periodName: String,
+    startDate: LocalDate,
+    endDate: LocalDate?,
+    errorMessage: String?,
+    onPeriodNameChange: (String) -> Unit,
+    onStartDateChange: (LocalDate) -> Unit,
+    onEndDateChange: (LocalDate?) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            OutlinedTextField(
+                value = periodName,
+                onValueChange = onPeriodNameChange,
+                label = {
+                    Text(text = stringResource(Res.string.ob_initial_period_name))
+                },
+                supportingText = {
+                    Text(
+                        text = stringResource(Res.string.ob_initial_period_name_option),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                isError = periodName.isBlank()
+            )
+
+            //Implementar DataPicker
+
+
+
+            if (errorMessage != null) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FirstPeriodBottomBar(
+    enabled: Boolean,
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        tonalElevation = 3.dp,
+        shadowElevation = 8.dp
+    ) {
+        Button(
+            onClick = onClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            enabled = enabled && !isLoading
+        ) {
+            if (isLoading) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp
+                    )
+                    Text(
+                        text = "Guardando...",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            } else {
+                Text(
+                    text = stringResource(Res.string.ob_initial_period_button_start),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
     }
 }
@@ -121,12 +265,58 @@ fun FirstPeriodScreen(
 
 @Preview
 @Composable
-fun OnboardingPreview() {
+fun FirstPeriodPreview() {
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            FirstPeriodScreen{
+            FirstPeriodContent(
+                state = FirstPeriodState(
+                    periodName = "Mi primer periodo",
+                    canProceed = true
+                )
+            )
+        }
+    }
+}
 
-            }
+@Preview
+@Composable
+fun FirstPeriodLoadingPreview() {
+    MaterialTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            FirstPeriodContent(
+                state = FirstPeriodState(
+                    periodName = "Mi primer periodo",
+                    isLoading = true,
+                    canProceed = true
+                )
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun FirstPeriodEmptyPreview() {
+    MaterialTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            FirstPeriodContent(
+                state = FirstPeriodState()
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun FirstPeriodErrorPreview() {
+    MaterialTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            FirstPeriodContent(
+                state = FirstPeriodState(
+                    periodName = "Mi periodo",
+                    errorMessage = "La fecha final debe ser posterior a la fecha inicial"
+                )
+            )
         }
     }
 }
