@@ -46,7 +46,6 @@ fun OnboardingScreen(
     viewModel: OnboardingViewModel = koinViewModel(),
     onNavigateToFirstPeriod: () -> Unit
 ) {
-    val state = viewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
             when (effect) {

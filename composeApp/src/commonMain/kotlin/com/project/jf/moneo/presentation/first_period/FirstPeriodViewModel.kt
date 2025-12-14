@@ -2,6 +2,7 @@ package com.project.jf.moneo.presentation.first_period
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.project.jf.moneo.domain.usecase.SaveHasCompletedOnboardingUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -10,7 +11,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
-class FirstPeriodViewModel : ViewModel() {
+class FirstPeriodViewModel(
+    private val saveHasCompletedOnboardingUseCase: SaveHasCompletedOnboardingUseCase
+) : ViewModel() {
 
     private val _state = MutableStateFlow(FirstPeriodState())
     val state = _state.asStateFlow()
