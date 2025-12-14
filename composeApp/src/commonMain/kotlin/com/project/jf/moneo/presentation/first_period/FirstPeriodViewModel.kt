@@ -2,7 +2,10 @@ package com.project.jf.moneo.presentation.first_period
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.project.jf.moneo.domain.usecase.SaveControlPeriodUseCase
 import com.project.jf.moneo.domain.usecase.SaveHasCompletedOnboardingUseCase
+import com.project.jf.moneo.presentation.model.ControlPeriodUI
+import com.project.jf.moneo.presentation.model.toDomain
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -12,7 +15,8 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
 class FirstPeriodViewModel(
-    private val saveHasCompletedOnboardingUseCase: SaveHasCompletedOnboardingUseCase
+    private val saveHasCompletedOnboardingUseCase: SaveHasCompletedOnboardingUseCase,
+    private val saveControlPeriodUseCase: SaveControlPeriodUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FirstPeriodState())
@@ -57,19 +61,21 @@ class FirstPeriodViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            // Simular guardado (aquí irías a tu repositorio)
-            kotlinx.coroutines.delay(1000)
-
-            // TODO: Guardar en repositorio
-            // periodRepository.savePeriod(
-            //     name = state.value.periodName,
-            //     startDate = state.value.startDate,
-            //     endDate = state.value.endDate
-            // )
-
+            saveControlPeriodUseCase(
+                controlPeriod = ControlPeriodUI(
+                    name = state.value.periodName,
+                    startDate = state.value.startDate.toEpochDays(),
+                    endDate = null
+                ).toDomain()
+            )
+            saveHasCompletedOnboarding()
             _state.update { it.copy(isLoading = false) }
             _effects.emit(FirstPeriodEffect.NavigateToNextScreen)
         }
+    }
+
+    private fun saveHasCompletedOnboarding() = viewModelScope.launch {
+        saveHasCompletedOnboardingUseCase(true)
     }
 
     private fun navigateBack() {

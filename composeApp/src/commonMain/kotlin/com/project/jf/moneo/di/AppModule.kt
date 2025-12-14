@@ -17,7 +17,7 @@ import org.koin.dsl.module
 
 val commonModule = module {
     factory { OnboardingViewModel(get()) }
-    factory { FirstPeriodViewModel(get()) }
+    factory { FirstPeriodViewModel(get(), get()) }
     factory { GetOnboardingStatusUseCase(get()) }
     factory { SaveHasCompletedOnboardingUseCase(get()) }
     factory { SaveControlPeriodUseCase(get()) }
