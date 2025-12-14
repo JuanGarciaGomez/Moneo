@@ -8,4 +8,7 @@ sealed interface Routes {
 
     @Serializable
     data object FirstPeriod : Routes
+
+    @Serializable
+    data object Dashboard : Routes
 }

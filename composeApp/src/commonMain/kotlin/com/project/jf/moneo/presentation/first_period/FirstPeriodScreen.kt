@@ -47,6 +47,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun FirstPeriodScreen(
     viewModel: FirstPeriodViewModel = koinViewModel(),
+    onNavigateToDashboard: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
@@ -55,11 +56,7 @@ fun FirstPeriodScreen(
         viewModel.effects.collectLatest { effect ->
             when (effect) {
                 FirstPeriodEffect.NavigateBack -> onNavigateBack()
-                FirstPeriodEffect.NavigateToNextScreen -> {
-                    // TODO: Navegar a la siguiente pantalla
-                    // Por ahora solo volvemos atrás
-                    onNavigateBack()
-                }
+                FirstPeriodEffect.NavigateToNextScreen -> onNavigateToDashboard()
             }
         }
     }

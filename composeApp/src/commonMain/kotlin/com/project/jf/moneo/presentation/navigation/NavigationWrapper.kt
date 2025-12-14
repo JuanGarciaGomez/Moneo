@@ -4,12 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.project.jf.moneo.presentation.dashboard.DashboardScreen
 import com.project.jf.moneo.presentation.first_period.FirstPeriodScreen
 import com.project.jf.moneo.presentation.navigation.routes.Routes
 import com.project.jf.moneo.presentation.onboarding.OnboardingScreen
 
 @Composable
-fun NavigationWrapper(){
+fun NavigationWrapper() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Routes.Onboarding) {
         composable<Routes.Onboarding> {
@@ -18,9 +19,15 @@ fun NavigationWrapper(){
             }
         }
         composable<Routes.FirstPeriod> {
-            FirstPeriodScreen{
+            FirstPeriodScreen(onNavigateToDashboard = {
+                navController.navigate(Routes.Dashboard)
+            }) {
                 navController.popBackStack()
             }
+        }
+
+        composable<Routes.Dashboard> {
+            DashboardScreen()
         }
     }
 }

@@ -10,6 +10,7 @@ import com.project.jf.moneo.domain.usecase.GetAllControlPeriodsUseCase
 import com.project.jf.moneo.domain.usecase.GetOnboardingStatusUseCase
 import com.project.jf.moneo.domain.usecase.SaveControlPeriodUseCase
 import com.project.jf.moneo.domain.usecase.SaveHasCompletedOnboardingUseCase
+import com.project.jf.moneo.presentation.dashboard.DashboardViewModel
 import com.project.jf.moneo.presentation.first_period.FirstPeriodViewModel
 import com.project.jf.moneo.presentation.onboarding.OnboardingViewModel
 import org.koin.core.module.Module
@@ -22,6 +23,7 @@ val commonModule = module {
     factory { SaveHasCompletedOnboardingUseCase(get()) }
     factory { SaveControlPeriodUseCase(get()) }
     factory { GetAllControlPeriodsUseCase(get()) }
+    factory { DashboardViewModel() }
     single { UserPreferencesRepository() }
     single { get<MoneoDatabase>().controlPeriodDao() }
     single { get<MoneoDatabase>().transactionDao() }
