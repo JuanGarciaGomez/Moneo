@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -26,9 +28,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.project.jf.moneo.presentation.components.BaseScreen
 import moneo.composeapp.generated.resources.Res
+import moneo.composeapp.generated.resources.app_name
 import moneo.composeapp.generated.resources.ob_button_continue
-import moneo.composeapp.generated.resources.ob_completed
 import moneo.composeapp.generated.resources.ob_current_period
 import moneo.composeapp.generated.resources.ob_distribution_title
 import moneo.composeapp.generated.resources.ob_report_info
@@ -51,37 +54,29 @@ fun OnboardingScreen(
             }
         }
     }
-
-    OnboardingContent(
-        state = state.value,
-        handleIntent = viewModel::handleIntent
-    )
+    OnboardingContent(handleIntent = viewModel::handleIntent)
 }
 
 
 @Composable
-fun OnboardingContent(
-    state: OnboardingState,
-    handleIntent: (intent: OnboardingIntent) -> Unit
-) {
-    Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+fun OnboardingContent(handleIntent: (intent: OnboardingIntent) -> Unit) {
+    BaseScreen(
+        topBar = {
+            FirstPeriodTopBar()
+        },
+        bottomBar = {
+            OnboardingBottomBar(onClick = { handleIntent(OnboardingIntent.ContinueOnboarding) })
+        }
+    ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(32.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Text(
                 text = stringResource(Res.string.ob_title),
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Start
-            )
-
-            Text(
-                text = stringResource(
-                    Res.string.ob_completed,
-                    state.hasCompletedOnboarding.toString()
-                ),
-                style = MaterialTheme.typography.bodyLarge
             )
 
             Text(
@@ -100,13 +95,37 @@ fun OnboardingContent(
                 textAlign = TextAlign.Start
             )
         }
+    }
+}
 
-        Button(
-            onClick = { handleIntent(OnboardingIntent.ContinueOnboarding) },
-            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
-        ) {
-            Text(stringResource(Res.string.ob_button_continue))
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FirstPeriodTopBar() {
+    TopAppBar(
+        title = {
+            Text(
+                text = stringResource(Res.string.app_name),
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
         }
+    )
+}
+
+
+@Composable
+private fun OnboardingBottomBar(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+    ) {
+        Text(
+            text = stringResource(Res.string.ob_button_continue),
+            style = MaterialTheme.typography.titleMedium
+        )
     }
 }
 
@@ -163,10 +182,7 @@ fun RowScope.Bar(heightFraction: Float, color: Color) {
 fun OnboardingPreview() {
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            OnboardingContent(
-                state = OnboardingState(hasCompletedOnboarding = false),
-                handleIntent = {}
-            )
+            OnboardingContent(handleIntent = {})
         }
     }
 }

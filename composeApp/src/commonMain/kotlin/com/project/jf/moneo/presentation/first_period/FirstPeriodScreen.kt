@@ -16,7 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -28,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.project.jf.moneo.presentation.components.BaseScreen
 import com.project.jf.moneo.presentation.components.DatePickerField
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.LocalDate
@@ -75,7 +75,7 @@ private fun FirstPeriodContent(
     state: FirstPeriodState,
     onIntent: (FirstPeriodIntent) -> Unit = {}
 ) {
-    Scaffold(
+    BaseScreen(
         topBar = {
             FirstPeriodTopBar(
                 onNavigateBack = { onIntent(FirstPeriodIntent.NavigateBack) }
@@ -87,26 +87,24 @@ private fun FirstPeriodContent(
                 isLoading = state.isLoading,
                 onClick = { onIntent(FirstPeriodIntent.SavePeriod) }
             )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            DescriptionCard()
+        },
+        content = {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                DescriptionCard()
 
-            FormCard(
-                periodName = state.periodName,
-                startDate = state.startDate,
-                periodNameError = state.periodNameError,
-                onPeriodNameChange = { onIntent(FirstPeriodIntent.UpdatePeriodName(it)) },
-                onStartDateChange = { onIntent(FirstPeriodIntent.UpdateStartDate(it)) },
-            )
+                FormCard(
+                    periodName = state.periodName,
+                    startDate = state.startDate,
+                    periodNameError = state.periodNameError,
+                    onPeriodNameChange = { onIntent(FirstPeriodIntent.UpdatePeriodName(it)) },
+                    onStartDateChange = { onIntent(FirstPeriodIntent.UpdateStartDate(it)) },
+                )
+            }
         }
-    }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -216,38 +214,30 @@ private fun FirstPeriodBottomBar(
     isLoading: Boolean,
     onClick: () -> Unit
 ) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        tonalElevation = 3.dp,
-        shadowElevation = 8.dp
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        enabled = enabled && !isLoading
     ) {
-        Button(
-            onClick = onClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            enabled = enabled && !isLoading
-        ) {
-            if (isLoading) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(20.dp),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        strokeWidth = 2.dp
-                    )
-                    Text(
-                        text = "Guardando...",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-            } else {
+        if (isLoading) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    strokeWidth = 2.dp
+                )
                 Text(
-                    text = stringResource(Res.string.ob_initial_period_button_start),
+                    text = "Guardando...",
                     style = MaterialTheme.typography.titleMedium
                 )
             }
+        } else {
+            Text(
+                text = stringResource(Res.string.ob_initial_period_button_start),
+                style = MaterialTheme.typography.titleMedium
+            )
         }
     }
 }
