@@ -24,4 +24,9 @@
     <string name="ob_initial_period_change">Cambiar</string>
     <string name="ob_initial_period_button_start">Comenzar</string>
 
+    <!-- Dashboard -->
+    <string name="dashboard_available">Disponible</string>
+
+
+
 </resources>
