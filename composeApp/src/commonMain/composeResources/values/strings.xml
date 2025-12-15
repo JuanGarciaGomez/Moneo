@@ -26,6 +26,9 @@
 
     <!-- Dashboard -->
     <string name="dashboard_available">Disponible</string>
+    <string name="dashboard_bottom_nav_home">Inicio</string>
+    <string name="dashboard_bottom_nav_Reports">Reportes</string>
+    <string name="dashboard_bottom_nav_settings">Ajustes</string>
 
 
 
