@@ -23,7 +23,7 @@ val commonModule = module {
     factory { SaveHasCompletedOnboardingUseCase(get()) }
     factory { SaveControlPeriodUseCase(get()) }
     factory { GetAllControlPeriodsUseCase(get()) }
-    factory { DashboardViewModel() }
+    factory { DashboardViewModel(get()) }
     single { UserPreferencesRepository() }
     single { get<MoneoDatabase>().controlPeriodDao() }
     single { get<MoneoDatabase>().transactionDao() }

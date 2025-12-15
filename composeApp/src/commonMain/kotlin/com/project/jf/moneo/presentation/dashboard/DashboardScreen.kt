@@ -31,6 +31,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,11 +41,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.project.jf.moneo.presentation.components.BaseScreen
+import com.project.jf.moneo.presentation.model.BottomNavigationItems
+import com.project.jf.moneo.presentation.model.ControlPeriodUI
+import kotlinx.coroutines.flow.collectLatest
 import moneo.composeapp.generated.resources.Res
+import moneo.composeapp.generated.resources.add
 import moneo.composeapp.generated.resources.app_name
 import moneo.composeapp.generated.resources.arrow_drop_down
 import moneo.composeapp.generated.resources.calendar
@@ -55,17 +62,32 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DashboardScreen(viewModel: DashboardViewModel = koinViewModel()) {
-    DashboardContent()
+
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.effects.collectLatest { effect ->
+            when (effect) {
+                else -> {}
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.handleIntent(DashboardIntent.FetchData)
+    }
+
+    DashboardContent(state, viewModel::handleIntent)
 }
 
 @Composable
-fun DashboardContent() {
+fun DashboardContent(state: DashboardState, handleIntent: (intent: DashboardIntent) -> Unit) {
     BaseScreen(
         topBar = {
             DashboardTopBar()
         },
         bottomBar = {
-            DashboardBottomBar()
+            DashboardBottomBar(state, handleIntent)
         },
         content = {
             Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -73,8 +95,8 @@ fun DashboardContent() {
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    MonthRangeSelector(
-                        options = listOf("Opcion 1", "Opcion 2", "Opcion 3"),
+                    ControlPeriodSelector(
+                        controlPeriods = state.allPeriods,
                         selected = "Selected Option"
                     ) {}
 
@@ -84,12 +106,14 @@ fun DashboardContent() {
 
                 FloatingActionButton(
                     onClick = { },
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
+                    shape = CircleShape,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = Color.White,
+                    modifier = Modifier.align(Alignment.BottomEnd)
                 ) {
                     Icon(
-                        painter = painterResource(Res.drawable.calendar),
-                        contentDescription = "Calendario"
+                        painter = painterResource(Res.drawable.add),
+                        contentDescription = "Añadir"
                     )
                 }
             }
@@ -129,8 +153,9 @@ fun ItemCard() {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 1.dp
+        color = Color.White,
+        tonalElevation = 1.dp,
+        shadowElevation = 1.dp
     ) {
         Row(
             modifier = Modifier
@@ -171,7 +196,6 @@ fun ItemCard() {
                 )
             }
 
-            // Precio
             Text(
                 text = "$15900",
                 style = MaterialTheme.typography.bodyMedium,
@@ -207,7 +231,11 @@ fun SummaryCard() {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Card(modifier = Modifier.weight(1f)) {
+        Card(
+            modifier = Modifier.weight(1f),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        ) {
             Column(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -217,7 +245,11 @@ fun SummaryCard() {
             }
         }
 
-        Card(modifier = Modifier.weight(1f)) {
+        Card(
+            modifier = Modifier.weight(1f),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        ) {
             Column(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -231,8 +263,8 @@ fun SummaryCard() {
 }
 
 @Composable
-fun MonthRangeSelector(
-    options: List<String>,
+fun ControlPeriodSelector(
+    controlPeriods: List<ControlPeriodUI>?,
     selected: String,
     onOptionSelected: (String) -> Unit
 ) {
@@ -249,7 +281,7 @@ fun MonthRangeSelector(
             shape = RoundedCornerShape(30),
             color = Color.White,
             tonalElevation = 1.dp,
-            shadowElevation = 1.dp,
+            shadowElevation = 2.dp,
         ) {
             Row(
                 modifier = Modifier
@@ -273,11 +305,11 @@ fun MonthRangeSelector(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            options.forEach { option ->
+            controlPeriods?.forEach { controlPeriod ->
                 DropdownMenuItem(
-                    text = { Text(option) },
+                    text = { Text(text = controlPeriod.name) },
                     onClick = {
-                        onOptionSelected(option)
+                        onOptionSelected(controlPeriod.name)
                         expanded = false
                     }
                 )
@@ -302,31 +334,26 @@ private fun DashboardTopBar() {
 }
 
 @Composable
-fun DashboardBottomBar() {
-    val items = listOf(
-        "Inicio",
-        "Reportes",
-        "Ajustes"
-    )
+fun DashboardBottomBar(state: DashboardState, handleIntent: (intent: DashboardIntent) -> Unit) {
+    val items = BottomNavigationItems.entries.toList()
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 0.dp
+        containerColor = Color.White,
+        tonalElevation = 2.dp
     ) {
         items.forEach { item ->
-
             NavigationBarItem(
-                selected = true,
-                onClick = { },
+                selected = state.bottomNavSelected == item,
+                onClick = { handleIntent(DashboardIntent.BottomNavSelected(item)) },
                 icon = {
                     Icon(
-                        painter = painterResource(Res.drawable.calendar),
-                        contentDescription = "item.label"
+                        painter = painterResource(item.icon),
+                        contentDescription = stringResource(item.title)
                     )
                 },
                 label = {
                     Text(
-                        text = "item.label",
+                        text = stringResource(item.title),
                         style = MaterialTheme.typography.labelSmall
                     )
                 },
@@ -347,5 +374,5 @@ fun DashboardBottomBar() {
 @Preview
 @Composable
 fun DashboardPreview() {
-    DashboardContent()
+    DashboardContent(state = DashboardState(), handleIntent = {})
 }
