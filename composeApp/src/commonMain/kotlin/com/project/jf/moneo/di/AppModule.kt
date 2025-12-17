@@ -8,6 +8,7 @@ import com.project.jf.moneo.data.local.repository.transaction.TransactionReposit
 import com.project.jf.moneo.data.local.repository.transaction.TransactionRepositoryImpl
 import com.project.jf.moneo.domain.usecase.GetAllControlPeriodsUseCase
 import com.project.jf.moneo.domain.usecase.GetOnboardingStatusUseCase
+import com.project.jf.moneo.domain.usecase.GetTransactionsForPeriodUseCase
 import com.project.jf.moneo.domain.usecase.SaveControlPeriodUseCase
 import com.project.jf.moneo.domain.usecase.SaveHasCompletedOnboardingUseCase
 import com.project.jf.moneo.presentation.dashboard.DashboardViewModel
@@ -23,7 +24,8 @@ val commonModule = module {
     factory { SaveHasCompletedOnboardingUseCase(get()) }
     factory { SaveControlPeriodUseCase(get()) }
     factory { GetAllControlPeriodsUseCase(get()) }
-    factory { DashboardViewModel(get()) }
+    factory { GetTransactionsForPeriodUseCase(get()) }
+    factory { DashboardViewModel(get(),get()) }
     single { UserPreferencesRepository() }
     single { get<MoneoDatabase>().controlPeriodDao() }
     single { get<MoneoDatabase>().transactionDao() }

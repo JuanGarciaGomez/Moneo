@@ -1,4 +1,4 @@
-package com.project.jf.moneo.data.local.entity
+package com.project.jf.moneo.domain.model
 
 enum class TransactionType {
     EXPENSE,

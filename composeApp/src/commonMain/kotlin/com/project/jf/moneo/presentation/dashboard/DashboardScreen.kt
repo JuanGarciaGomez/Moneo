@@ -24,9 +24,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -41,13 +38,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.project.jf.moneo.domain.model.TransactionType
 import com.project.jf.moneo.presentation.components.BaseScreen
-import com.project.jf.moneo.presentation.model.BottomNavigationItems
+import com.project.jf.moneo.presentation.components.DashboardBottomBar
+import com.project.jf.moneo.presentation.extensions.toShortDateEs
 import com.project.jf.moneo.presentation.model.ControlPeriodUI
+import com.project.jf.moneo.presentation.model.TransactionUI
 import kotlinx.coroutines.flow.collectLatest
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.add
@@ -87,7 +86,9 @@ fun DashboardContent(state: DashboardState, handleIntent: (intent: DashboardInte
             DashboardTopBar()
         },
         bottomBar = {
-            DashboardBottomBar(state, handleIntent)
+            DashboardBottomBar(state.bottomNavSelected) {
+                handleIntent(DashboardIntent.BottomNavSelected(it))
+            }
         },
         content = {
             Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -97,11 +98,13 @@ fun DashboardContent(state: DashboardState, handleIntent: (intent: DashboardInte
                 ) {
                     ControlPeriodSelector(
                         controlPeriods = state.allPeriods,
-                        selected = "Selected Option"
-                    ) {}
+                        selected = state.periodSelected?.name.orEmpty()
+                    ) {
+                        handleIntent(DashboardIntent.PeriodSelected(it))
+                    }
 
                     SummaryCard()
-                    HistoryCard()
+                    HistoryCard(state.transactions)
                 }
 
                 FloatingActionButton(
@@ -122,16 +125,7 @@ fun DashboardContent(state: DashboardState, handleIntent: (intent: DashboardInte
 }
 
 @Composable
-fun HistoryCard() {
-    val mockTransactions = remember {
-        listOf(
-            "Hoy",
-            "Hoy2",
-            "Hoy3",
-            "Hoy4",
-            "Hoy5",
-        )
-    }
+fun HistoryCard(transactions: List<TransactionUI>?) {
 
     Row(modifier = Modifier.fillMaxWidth()) {
         Text(text = "Transacciones reciente", modifier = Modifier.weight(1f))
@@ -139,17 +133,17 @@ fun HistoryCard() {
     }
 
     LazyColumn(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(mockTransactions) { transaction ->
-            ItemCard()
+        items(transactions.orEmpty()) { transaction ->
+            ItemCard(transaction)
         }
     }
 }
 
 @Composable
-fun ItemCard() {
+fun ItemCard(transaction: TransactionUI) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -162,7 +156,6 @@ fun ItemCard() {
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -184,20 +177,20 @@ fun ItemCard() {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Cafe",
+                    text = transaction.title,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "Hoy - Comida",
+                    text = "${transaction.date.toShortDateEs()} - ${transaction.category}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             Text(
-                text = "$15900",
+                text = transaction.amount.toString(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.error,
                 fontWeight = FontWeight.Medium
@@ -266,7 +259,7 @@ fun SummaryCard() {
 fun ControlPeriodSelector(
     controlPeriods: List<ControlPeriodUI>?,
     selected: String,
-    onOptionSelected: (String) -> Unit
+    onOptionSelected: (ControlPeriodUI) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -309,7 +302,7 @@ fun ControlPeriodSelector(
                 DropdownMenuItem(
                     text = { Text(text = controlPeriod.name) },
                     onClick = {
-                        onOptionSelected(controlPeriod.name)
+                        onOptionSelected(controlPeriod)
                         expanded = false
                     }
                 )
@@ -333,46 +326,56 @@ private fun DashboardTopBar() {
     )
 }
 
-@Composable
-fun DashboardBottomBar(state: DashboardState, handleIntent: (intent: DashboardIntent) -> Unit) {
-    val items = BottomNavigationItems.entries.toList()
-
-    NavigationBar(
-        containerColor = Color.White,
-        tonalElevation = 2.dp
-    ) {
-        items.forEach { item ->
-            NavigationBarItem(
-                selected = state.bottomNavSelected == item,
-                onClick = { handleIntent(DashboardIntent.BottomNavSelected(item)) },
-                icon = {
-                    Icon(
-                        painter = painterResource(item.icon),
-                        contentDescription = stringResource(item.title)
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(item.title),
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                },
-                alwaysShowLabel = true,
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    indicatorColor = Color.Transparent
-                )
-            )
-        }
-    }
-}
-
-
 @Preview
 @Composable
 fun DashboardPreview() {
-    DashboardContent(state = DashboardState(), handleIntent = {})
+    DashboardContent(
+        state = DashboardState(
+            allPeriods = listOf(
+                ControlPeriodUI(
+                    id = 1,
+                    name = "Nov-Dic",
+                    startDate = 120L,
+                    endDate = null
+                )
+            ),
+            periodSelected = ControlPeriodUI(
+                id = 1,
+                name = "Nov-Dic",
+                startDate = 120L,
+                endDate = null
+            ),
+            transactions = listOf(
+                TransactionUI(
+                    id = 1,
+                    controlPeriodId = 1L,
+                    title = "Donas",
+                    amount = 10000.0,
+                    date = 20440L,
+                    type = TransactionType.EXPENSE,
+                    category = "Comida",
+                    paymentMethod = "Pago de prueba"
+                ),
+                TransactionUI(
+                    id = 1,
+                    controlPeriodId = 1L,
+                    title = "Perro caliente",
+                    amount = 15000.0,
+                    date = 20441L,
+                    type = TransactionType.EXPENSE,
+                    category = "Comida",
+                    paymentMethod = "Pago de prueba"
+                ),
+                TransactionUI(
+                    id = 1,
+                    controlPeriodId = 1L,
+                    title = "Gasolina",
+                    amount = 1500000.0,
+                    date = 20442L,
+                    type = TransactionType.EXPENSE,
+                    category = "Carro",
+                    paymentMethod = "Pago de prueba"
+                )
+            )
+        ), handleIntent = {})
 }

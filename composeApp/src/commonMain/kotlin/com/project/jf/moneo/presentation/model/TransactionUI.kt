@@ -1,25 +1,10 @@
-package com.project.jf.moneo.data.local.entity
+package com.project.jf.moneo.presentation.model
 
-import ControlPeriodEntity
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
 import com.project.jf.moneo.domain.model.Transaction
 import com.project.jf.moneo.domain.model.TransactionType
 
-@Entity(
-    tableName = "transactions",
-    foreignKeys = [
-        ForeignKey(
-            entity = ControlPeriodEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["controlPeriodId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
-)
-data class TransactionEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+data class TransactionUI(
+    val id: Long = 0,
     val controlPeriodId: Long,
     val title: String,
     val amount: Double,
@@ -30,7 +15,7 @@ data class TransactionEntity(
     val notes: String? = null
 )
 
-fun TransactionEntity.toDomain(): Transaction{
+fun TransactionUI.toDomain(): Transaction {
     return Transaction(
         id = id,
         controlPeriodId = controlPeriodId,
@@ -44,8 +29,8 @@ fun TransactionEntity.toDomain(): Transaction{
     )
 }
 
-fun Transaction.toData(): TransactionEntity{
-    return TransactionEntity(
+fun Transaction.toUI(): TransactionUI {
+    return TransactionUI(
         id = id,
         controlPeriodId = controlPeriodId,
         title = title,
@@ -57,4 +42,3 @@ fun Transaction.toData(): TransactionEntity{
         notes = notes
     )
 }
-
