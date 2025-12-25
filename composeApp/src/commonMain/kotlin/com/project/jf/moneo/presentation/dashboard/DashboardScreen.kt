@@ -38,8 +38,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.project.jf.moneo.domain.model.TransactionType
 import com.project.jf.moneo.presentation.components.BaseScreen
@@ -129,7 +131,12 @@ fun HistoryCard(transactions: List<TransactionUI>?) {
 
     Row(modifier = Modifier.fillMaxWidth()) {
         Text(text = "Transacciones reciente", modifier = Modifier.weight(1f))
-        Text(text = "Ver todas", modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+        Text(
+            text = "Ver todas",
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End,
+            style = TextStyle(textDecoration = TextDecoration.Underline)
+        )
     }
 
     LazyColumn(
