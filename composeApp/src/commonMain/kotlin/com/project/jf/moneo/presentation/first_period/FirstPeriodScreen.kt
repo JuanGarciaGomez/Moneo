@@ -39,6 +39,8 @@ import moneo.composeapp.generated.resources.ob_initial_period_button_start
 import moneo.composeapp.generated.resources.ob_initial_period_description
 import moneo.composeapp.generated.resources.ob_initial_period_name
 import moneo.composeapp.generated.resources.ob_initial_period_name_option
+import moneo.composeapp.generated.resources.ob_initial_person_name
+import moneo.composeapp.generated.resources.ob_initial_person_name_option
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -94,9 +96,12 @@ private fun FirstPeriodContent(
 
                 FormCard(
                     periodName = state.periodName,
+                    personName = state.personName,
+                    personNameError = state.personNameError,
                     startDate = state.startDate,
                     periodNameError = state.periodNameError,
                     onPeriodNameChange = { onIntent(FirstPeriodIntent.UpdatePeriodName(it)) },
+                    onPersonNameChange = { onIntent(FirstPeriodIntent.OnPersonNameChange(it)) },
                     onStartDateChange = { onIntent(FirstPeriodIntent.UpdateStartDate(it)) },
                 )
             }
@@ -161,9 +166,12 @@ private fun DescriptionCard() {
 @Composable
 private fun FormCard(
     periodName: String,
+    personName: String,
+    personNameError: Boolean,
     periodNameError: Boolean,
     startDate: LocalDate,
     onPeriodNameChange: (String) -> Unit,
+    onPersonNameChange: (String) -> Unit,
     onStartDateChange: (LocalDate) -> Unit,
 ) {
     Card(
@@ -179,6 +187,24 @@ private fun FormCard(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
+            OutlinedTextField(
+                value = personName,
+                onValueChange = onPersonNameChange,
+                label = {
+                    Text(text = stringResource(Res.string.ob_initial_person_name))
+                },
+                supportingText = {
+                    Text(
+                        text = stringResource(Res.string.ob_initial_person_name_option),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                isError = personNameError
+            )
+
             OutlinedTextField(
                 value = periodName,
                 onValueChange = onPeriodNameChange,

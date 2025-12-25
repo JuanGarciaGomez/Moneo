@@ -9,7 +9,9 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 data class FirstPeriodState(
     val periodName: String = "",
+    val personName: String = "",
     val periodNameError : Boolean = false,
+    val personNameError : Boolean = false,
     val startDate: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
     val isLoading: Boolean = false,
     val canProceed: Boolean = false
@@ -17,6 +19,7 @@ data class FirstPeriodState(
 
 sealed interface FirstPeriodIntent {
     data class UpdatePeriodName(val name: String) : FirstPeriodIntent
+    data class OnPersonNameChange(val name: String) : FirstPeriodIntent
     data class UpdateStartDate(val date: LocalDate) : FirstPeriodIntent
     object SavePeriod : FirstPeriodIntent
     object NavigateBack : FirstPeriodIntent

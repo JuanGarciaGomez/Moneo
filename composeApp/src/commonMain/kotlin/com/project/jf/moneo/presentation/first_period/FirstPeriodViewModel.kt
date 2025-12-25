@@ -28,9 +28,20 @@ class FirstPeriodViewModel(
     fun handleIntent(intent: FirstPeriodIntent) {
         when (intent) {
             is FirstPeriodIntent.UpdatePeriodName -> updatePeriodName(intent.name)
+            is FirstPeriodIntent.OnPersonNameChange -> updateOnPersonNameChange(intent.name)
             is FirstPeriodIntent.UpdateStartDate -> updateStartDate(intent.date)
             FirstPeriodIntent.SavePeriod -> savePeriod()
             FirstPeriodIntent.NavigateBack -> navigateBack()
+        }
+    }
+
+    private fun updateOnPersonNameChange(name: String) {
+        _state.update {
+            it.copy(
+                personName = name,
+                canProceed = name.isNotBlank(),
+                personNameError = name.isBlank()
+            )
         }
     }
 
