@@ -9,8 +9,10 @@ import com.project.jf.moneo.data.local.repository.transaction.TransactionReposit
 import com.project.jf.moneo.domain.usecase.GetAllControlPeriodsUseCase
 import com.project.jf.moneo.domain.usecase.GetOnboardingStatusUseCase
 import com.project.jf.moneo.domain.usecase.GetTransactionsForPeriodUseCase
+import com.project.jf.moneo.domain.usecase.GetUserNameUseCase
 import com.project.jf.moneo.domain.usecase.SaveControlPeriodUseCase
 import com.project.jf.moneo.domain.usecase.SaveHasCompletedOnboardingUseCase
+import com.project.jf.moneo.domain.usecase.SaveUserNameUseCase
 import com.project.jf.moneo.presentation.dashboard.DashboardViewModel
 import com.project.jf.moneo.presentation.first_period.FirstPeriodViewModel
 import com.project.jf.moneo.presentation.onboarding.OnboardingViewModel
@@ -19,13 +21,15 @@ import org.koin.dsl.module
 
 val commonModule = module {
     factory { OnboardingViewModel(get()) }
-    factory { FirstPeriodViewModel(get(), get()) }
+    factory { FirstPeriodViewModel(get(), get(), get()) }
     factory { GetOnboardingStatusUseCase(get()) }
     factory { SaveHasCompletedOnboardingUseCase(get()) }
+    factory { SaveUserNameUseCase(get()) }
+    factory { GetUserNameUseCase(get()) }
     factory { SaveControlPeriodUseCase(get()) }
     factory { GetAllControlPeriodsUseCase(get()) }
     factory { GetTransactionsForPeriodUseCase(get()) }
-    factory { DashboardViewModel(get(),get()) }
+    factory { DashboardViewModel(get(), get()) }
     single { UserPreferencesRepository() }
     single { get<MoneoDatabase>().controlPeriodDao() }
     single { get<MoneoDatabase>().transactionDao() }

@@ -21,7 +21,7 @@ sealed interface FirstPeriodIntent {
     data class UpdatePeriodName(val name: String) : FirstPeriodIntent
     data class OnPersonNameChange(val name: String) : FirstPeriodIntent
     data class UpdateStartDate(val date: LocalDate) : FirstPeriodIntent
-    object SavePeriod : FirstPeriodIntent
+    object SaveData : FirstPeriodIntent
     object NavigateBack : FirstPeriodIntent
 }
 

@@ -84,7 +84,7 @@ private fun FirstPeriodContent(
             FirstPeriodBottomBar(
                 enabled = state.canProceed && !state.isLoading,
                 isLoading = state.isLoading,
-                onClick = { onIntent(FirstPeriodIntent.SavePeriod) }
+                onClick = { onIntent(FirstPeriodIntent.SaveData) }
             )
         },
         content = {

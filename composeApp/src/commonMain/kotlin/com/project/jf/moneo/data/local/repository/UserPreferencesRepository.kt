@@ -6,6 +6,15 @@ class UserPreferencesRepository() {
 
     companion object {
         private const val HAS_COMPLETED_ONBOARDING = "has_completed_onboarding"
+        private const val USER_NAME = "user_name"
+    }
+
+    fun saveUserName(userName: String) {
+        settings.putString(USER_NAME, userName)
+    }
+
+    fun getUserName(): String {
+        return settings.getString(USER_NAME, "")
     }
 
     fun saveHasCompletedOnboarding(hasCompletedOnboarding: Boolean) {
