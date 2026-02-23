@@ -316,7 +316,8 @@ fun FirstPeriodErrorPreview() {
         Surface(modifier = Modifier.fillMaxSize()) {
             FirstPeriodContent(
                 state = FirstPeriodState(
-                    periodName = "Mi periodo",
+                    personNameError = true,
+                    periodNameError = true
                 )
             )
         }
