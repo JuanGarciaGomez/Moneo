@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.project.jf.moneo.presentation.components.BaseScreen
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.app_name
@@ -65,7 +64,8 @@ fun OnboardingContent(handleIntent: (intent: OnboardingIntent) -> Unit) {
         },
         bottomBar = {
             OnboardingBottomBar(onClick = { handleIntent(OnboardingIntent.ContinueOnboarding) })
-        }
+        },
+        showFloatingActionButton = false
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(16.dp),

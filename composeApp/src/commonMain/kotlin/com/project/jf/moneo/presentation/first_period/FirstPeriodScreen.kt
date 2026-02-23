@@ -87,6 +87,7 @@ private fun FirstPeriodContent(
                 onClick = { onIntent(FirstPeriodIntent.SaveData) }
             )
         },
+        showFloatingActionButton = false,
         content = {
             Column(
                 modifier = Modifier.padding(16.dp),
