@@ -1,64 +1,28 @@
 package com.project.jf.moneo.presentation.dashboard
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExposedDropdownMenuAnchorType
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.dp
-import com.project.jf.moneo.domain.model.TransactionType
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.project.jf.moneo.presentation.components.BaseScreen
 import com.project.jf.moneo.presentation.components.DashboardBottomBar
-import com.project.jf.moneo.presentation.extensions.toShortDateEs
-import com.project.jf.moneo.presentation.model.ControlPeriodUI
-import com.project.jf.moneo.presentation.model.TransactionUI
+import com.project.jf.moneo.presentation.model.BottomNavigationItems
+import com.project.jf.moneo.presentation.navigation.routes.DashboardRoute
 import kotlinx.coroutines.flow.collectLatest
 import moneo.composeapp.generated.resources.Res
-import moneo.composeapp.generated.resources.add
 import moneo.composeapp.generated.resources.app_name
-import moneo.composeapp.generated.resources.arrow_drop_down
-import moneo.composeapp.generated.resources.calendar
-import moneo.composeapp.generated.resources.dashboard_available
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -83,43 +47,45 @@ fun DashboardScreen(viewModel: DashboardViewModel = koinViewModel()) {
 
 @Composable
 fun DashboardContent(state: DashboardState, handleIntent: (intent: DashboardIntent) -> Unit) {
+    val nestedNavController = rememberNavController()
+    val navBackStackEntry by nestedNavController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val selectedItem = BottomNavigationItems.entries.find { item ->
+        currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
+    } ?: BottomNavigationItems.HOME
+
     BaseScreen(
         topBar = {
             DashboardTopBar()
         },
         bottomBar = {
-            DashboardBottomBar(state.bottomNavSelected) {
-                handleIntent(DashboardIntent.BottomNavSelected(it))
+            DashboardBottomBar(selectedItem) { item ->
+                nestedNavController.navigate(item.route) {
+                    popUpTo(nestedNavController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }
         },
         content = {
-            Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    ControlPeriodSelector(
-                        controlPeriods = state.allPeriods,
-                        selected = state.periodSelected?.name.orEmpty()
-                    ) {
-                        handleIntent(DashboardIntent.PeriodSelected(it))
-                    }
-
-                    SummaryCard()
-                    HistoryCard(state.transactions)
-                }
-
-                FloatingActionButton(
-                    onClick = { },
-                    shape = CircleShape,
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = Color.White,
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.add),
-                        contentDescription = "Añadir"
+            NavHost(
+                navController = nestedNavController,
+                startDestination = DashboardRoute.Home
+            ) {
+                composable<DashboardRoute.Home> {
+                    HomeScreen(
+                        state = state,
+                        handleIntent = handleIntent,
+                        onNavigateToHistory = {}
                     )
+                }
+                composable<DashboardRoute.Reports> {
+                    ReportsScreen()
+                }
+                composable<DashboardRoute.Settings> {
+                    SettingsScreen()
                 }
             }
         }
@@ -127,197 +93,14 @@ fun DashboardContent(state: DashboardState, handleIntent: (intent: DashboardInte
 }
 
 @Composable
-fun HistoryCard(transactions: List<TransactionUI>?) {
-
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Text(text = "Transacciones reciente", modifier = Modifier.weight(1f))
-        Text(
-            text = "Ver todas",
-            modifier = Modifier.weight(1f),
-            textAlign = TextAlign.End,
-            style = TextStyle(textDecoration = TextDecoration.Underline)
-        )
-    }
-
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(transactions.orEmpty()) { transaction ->
-            ItemCard(transaction)
-        }
-    }
+fun ReportsScreen() {
+    Text(text = "Reports Screen")
 }
 
 @Composable
-fun ItemCard(transaction: TransactionUI) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        color = Color.White,
-        tonalElevation = 1.dp,
-        shadowElevation = 1.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.calendar),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = transaction.title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = "${transaction.date.toShortDateEs()} - ${transaction.category}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Text(
-                text = transaction.amount.toString(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.error,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
+fun SettingsScreen() {
+    Text(text = "Settings Screen")
 }
-
-@Composable
-fun SummaryCard() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(text = stringResource(Res.string.dashboard_available))
-
-            Text(text = "$1,240.50")
-
-            Text(text = "Para nombre de la categoria Mock")
-        }
-    }
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Card(
-            modifier = Modifier.weight(1f),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(text = "Ingresos")
-                Text(text = "$1,500.00")
-            }
-        }
-
-        Card(
-            modifier = Modifier.weight(1f),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(text = "Gastos")
-                Text(text = "$259.50")
-            }
-        }
-    }
-
-}
-
-@Composable
-fun ControlPeriodSelector(
-    controlPeriods: List<ControlPeriodUI>?,
-    selected: String,
-    onOptionSelected: (ControlPeriodUI) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        Surface(
-            modifier = Modifier
-                .menuAnchor(type = ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(30),
-            color = Color.White,
-            tonalElevation = 1.dp,
-            shadowElevation = 2.dp,
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = selected,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    painter = painterResource(Res.drawable.arrow_drop_down),
-                    contentDescription = null
-                )
-            }
-        }
-
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            controlPeriods?.forEach { controlPeriod ->
-                DropdownMenuItem(
-                    text = { Text(text = controlPeriod.name) },
-                    onClick = {
-                        onOptionSelected(controlPeriod)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
 
 @Composable
 private fun DashboardTopBar() {
@@ -331,58 +114,4 @@ private fun DashboardTopBar() {
             )
         }
     )
-}
-
-@Preview
-@Composable
-fun DashboardPreview() {
-    DashboardContent(
-        state = DashboardState(
-            allPeriods = listOf(
-                ControlPeriodUI(
-                    id = 1,
-                    name = "Nov-Dic",
-                    startDate = 120L,
-                    endDate = null
-                )
-            ),
-            periodSelected = ControlPeriodUI(
-                id = 1,
-                name = "Nov-Dic",
-                startDate = 120L,
-                endDate = null
-            ),
-            transactions = listOf(
-                TransactionUI(
-                    id = 1,
-                    controlPeriodId = 1L,
-                    title = "Donas",
-                    amount = 10000.0,
-                    date = 20440L,
-                    type = TransactionType.EXPENSE,
-                    category = "Comida",
-                    paymentMethod = "Pago de prueba"
-                ),
-                TransactionUI(
-                    id = 1,
-                    controlPeriodId = 1L,
-                    title = "Perro caliente",
-                    amount = 15000.0,
-                    date = 20441L,
-                    type = TransactionType.EXPENSE,
-                    category = "Comida",
-                    paymentMethod = "Pago de prueba"
-                ),
-                TransactionUI(
-                    id = 1,
-                    controlPeriodId = 1L,
-                    title = "Gasolina",
-                    amount = 1500000.0,
-                    date = 20442L,
-                    type = TransactionType.EXPENSE,
-                    category = "Carro",
-                    paymentMethod = "Pago de prueba"
-                )
-            )
-        ), handleIntent = {})
 }
