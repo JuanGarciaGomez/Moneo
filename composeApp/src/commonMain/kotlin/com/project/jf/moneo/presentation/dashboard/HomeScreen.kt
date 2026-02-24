@@ -60,17 +60,26 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ControlPeriodSelector(
-                controlPeriods = state.allPeriods,
-                selected = state.periodSelected?.name.orEmpty()
-            ) {
-                handleIntent(DashboardIntent.PeriodSelected(it))
-            }
-
-            SummaryCard()
-            HistoryCard(state.transactions, onNavigateToHistory)
+            HomeContent(state, handleIntent, onNavigateToHistory)
         }
     }
+}
+
+@Composable
+fun HomeContent(
+    state: DashboardState,
+    handleIntent: (DashboardIntent) -> Unit,
+    onNavigateToHistory: () -> Unit
+) {
+    ControlPeriodSelector(
+        controlPeriods = state.allPeriods,
+        selected = state.periodSelected?.name.orEmpty()
+    ) {
+        handleIntent(DashboardIntent.PeriodSelected(it))
+    }
+
+    SummaryCard()
+    HistoryCard(state.transactions, onNavigateToHistory)
 }
 
 @Composable

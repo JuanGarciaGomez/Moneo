@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.project.jf.moneo.presentation.dashboard.DashboardScreen
+import com.project.jf.moneo.presentation.dashboard.DashboardRouter
 import com.project.jf.moneo.presentation.first_period.FirstPeriodScreen
 import com.project.jf.moneo.presentation.navigation.routes.MainRoute
 import com.project.jf.moneo.presentation.onboarding.OnboardingScreen
@@ -29,7 +29,7 @@ fun NavigationWrapper() {
         }
 
         composable<MainRoute.Dashboard> {
-            DashboardScreen()
+            DashboardRouter()
         }
     }
 }

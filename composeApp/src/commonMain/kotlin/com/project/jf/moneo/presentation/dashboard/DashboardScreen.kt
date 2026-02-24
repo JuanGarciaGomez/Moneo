@@ -19,6 +19,8 @@ import com.project.jf.moneo.presentation.components.BaseScreen
 import com.project.jf.moneo.presentation.components.DashboardBottomBar
 import com.project.jf.moneo.presentation.model.BottomNavigationItems
 import com.project.jf.moneo.presentation.navigation.routes.DashboardRoute
+import com.project.jf.moneo.presentation.report.ReportsScreen
+import com.project.jf.moneo.presentation.setting.SettingsScreen
 import kotlinx.coroutines.flow.collectLatest
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.app_name
@@ -26,9 +28,15 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun DashboardScreen(viewModel: DashboardViewModel = koinViewModel()) {
+fun DashboardRouter(viewModel: DashboardViewModel = koinViewModel()) {
 
     val state by viewModel.state.collectAsState()
+    val nestedNavController = rememberNavController()
+    val navBackStackEntry by nestedNavController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val selectedItem = BottomNavigationItems.entries.find { item ->
+        currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
+    } ?: BottomNavigationItems.HOME
 
     LaunchedEffect(Unit) {
         viewModel.effects.collectLatest { effect ->
@@ -41,18 +49,6 @@ fun DashboardScreen(viewModel: DashboardViewModel = koinViewModel()) {
     LaunchedEffect(Unit) {
         viewModel.handleIntent(DashboardIntent.FetchData)
     }
-
-    DashboardContent(state, viewModel::handleIntent)
-}
-
-@Composable
-fun DashboardContent(state: DashboardState, handleIntent: (intent: DashboardIntent) -> Unit) {
-    val nestedNavController = rememberNavController()
-    val navBackStackEntry by nestedNavController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-    val selectedItem = BottomNavigationItems.entries.find { item ->
-        currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
-    } ?: BottomNavigationItems.HOME
 
     BaseScreen(
         topBar = {
@@ -77,7 +73,7 @@ fun DashboardContent(state: DashboardState, handleIntent: (intent: DashboardInte
                 composable<DashboardRoute.Home> {
                     HomeScreen(
                         state = state,
-                        handleIntent = handleIntent,
+                        handleIntent = viewModel::handleIntent,
                         onNavigateToHistory = {}
                     )
                 }
@@ -90,16 +86,6 @@ fun DashboardContent(state: DashboardState, handleIntent: (intent: DashboardInte
             }
         }
     )
-}
-
-@Composable
-fun ReportsScreen() {
-    Text(text = "Reports Screen")
-}
-
-@Composable
-fun SettingsScreen() {
-    Text(text = "Settings Screen")
 }
 
 @Composable
