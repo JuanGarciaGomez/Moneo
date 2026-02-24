@@ -1,9 +1,9 @@
-package com.project.jf.moneo.presentation.dashboard
+package com.project.jf.moneo.presentation.home
 
 import com.project.jf.moneo.presentation.model.ControlPeriodUI
 import com.project.jf.moneo.presentation.model.TransactionUI
 
-data class DashboardState(
+data class HomeState(
     val expandedDropdownMenu: Boolean = false,
     val isLoading: Boolean = false,
     val allPeriods: List<ControlPeriodUI>? = null,
@@ -11,10 +11,10 @@ data class DashboardState(
     val transactions: List<TransactionUI>? = null
 )
 
-sealed class DashboardIntent {
-    data object FetchData : DashboardIntent()
-    data class PeriodSelected(val period: ControlPeriodUI) : DashboardIntent()
+sealed class HomeIntent {
+    data object FetchData : HomeIntent()
+    data class PeriodSelected(val period: ControlPeriodUI) : HomeIntent()
 }
 
-sealed class DashboardEffect {
+sealed class HomedEffect {
 }

@@ -13,7 +13,7 @@ import com.project.jf.moneo.domain.usecase.GetUserNameUseCase
 import com.project.jf.moneo.domain.usecase.SaveControlPeriodUseCase
 import com.project.jf.moneo.domain.usecase.SaveHasCompletedOnboardingUseCase
 import com.project.jf.moneo.domain.usecase.SaveUserNameUseCase
-import com.project.jf.moneo.presentation.dashboard.DashboardViewModel
+import com.project.jf.moneo.presentation.home.HomeViewModel
 import com.project.jf.moneo.presentation.first_period.FirstPeriodViewModel
 import com.project.jf.moneo.presentation.onboarding.OnboardingViewModel
 import org.koin.core.module.Module
@@ -29,7 +29,7 @@ val commonModule = module {
     factory { SaveControlPeriodUseCase(get()) }
     factory { GetAllControlPeriodsUseCase(get()) }
     factory { GetTransactionsForPeriodUseCase(get()) }
-    factory { DashboardViewModel(get(), get()) }
+    factory { HomeViewModel(get(), get()) }
     single { UserPreferencesRepository() }
     single { get<MoneoDatabase>().controlPeriodDao() }
     single { get<MoneoDatabase>().transactionDao() }

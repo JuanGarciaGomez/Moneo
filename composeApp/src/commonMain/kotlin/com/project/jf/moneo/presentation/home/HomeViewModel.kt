@@ -1,4 +1,4 @@
-package com.project.jf.moneo.presentation.dashboard
+package com.project.jf.moneo.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,6 +6,7 @@ import com.project.jf.moneo.domain.usecase.GetAllControlPeriodsUseCase
 import com.project.jf.moneo.domain.usecase.GetTransactionsForPeriodUseCase
 import com.project.jf.moneo.presentation.model.ControlPeriodUI
 import com.project.jf.moneo.presentation.model.toUI
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -13,23 +14,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DashboardViewModel(
+class HomeViewModel(
     private val getAllControlPeriodsUseCase: GetAllControlPeriodsUseCase,
     private val getTransactionsForPeriodUseCase: GetTransactionsForPeriodUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(DashboardState())
+    private val _state = MutableStateFlow(HomeState())
     val state = _state.asStateFlow()
 
-    private val _effects = MutableSharedFlow<DashboardEffect>()
+    private val _effects = MutableSharedFlow<HomedEffect>()
     val effects = _effects.asSharedFlow()
 
-    private var transactionsJob: kotlinx.coroutines.Job? = null
+    private var transactionsJob: Job? = null
 
-    fun handleIntent(intent: DashboardIntent) {
+    fun handleIntent(intent: HomeIntent) {
         when (intent) {
-            DashboardIntent.FetchData -> fetchData()
-            is DashboardIntent.PeriodSelected -> handlePeriodSelected(intent.period)
+            HomeIntent.FetchData -> fetchData()
+            is HomeIntent.PeriodSelected -> handlePeriodSelected(intent.period)
         }
     }
 

@@ -1,4 +1,4 @@
-package com.project.jf.moneo.presentation.dashboard
+package com.project.jf.moneo.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +26,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,17 +44,38 @@ import androidx.compose.ui.unit.dp
 import com.project.jf.moneo.presentation.extensions.toShortDateEs
 import com.project.jf.moneo.presentation.model.ControlPeriodUI
 import com.project.jf.moneo.presentation.model.TransactionUI
+import kotlinx.coroutines.flow.collectLatest
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.arrow_drop_down
 import moneo.composeapp.generated.resources.calendar
 import moneo.composeapp.generated.resources.dashboard_available
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HomeScreen(
-    state: DashboardState,
-    handleIntent: (DashboardIntent) -> Unit,
+fun HomeScreen(viewModel: HomeViewModel = koinViewModel(), onNavigateToHistory: () -> Unit) {
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.effects.collectLatest { effect ->
+            when (effect) {
+                else -> {}
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.handleIntent(HomeIntent.FetchData)
+    }
+
+    HomeContent(state, viewModel::handleIntent, onNavigateToHistory)
+}
+
+@Composable
+fun HomeContent(
+    state: HomeState,
+    handleIntent: (HomeIntent) -> Unit,
     onNavigateToHistory: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -60,26 +83,17 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            HomeContent(state, handleIntent, onNavigateToHistory)
+            ControlPeriodSelector(
+                controlPeriods = state.allPeriods,
+                selected = state.periodSelected?.name.orEmpty()
+            ) {
+                handleIntent(HomeIntent.PeriodSelected(it))
+            }
+
+            SummaryCard()
+            HistoryCard(state.transactions, onNavigateToHistory)
         }
     }
-}
-
-@Composable
-fun HomeContent(
-    state: DashboardState,
-    handleIntent: (DashboardIntent) -> Unit,
-    onNavigateToHistory: () -> Unit
-) {
-    ControlPeriodSelector(
-        controlPeriods = state.allPeriods,
-        selected = state.periodSelected?.name.orEmpty()
-    ) {
-        handleIntent(DashboardIntent.PeriodSelected(it))
-    }
-
-    SummaryCard()
-    HistoryCard(state.transactions, onNavigateToHistory)
 }
 
 @Composable
