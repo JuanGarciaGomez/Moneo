@@ -1,3 +1,5 @@
+package com.project.jf.moneo.data.local.entity
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.project.jf.moneo.domain.model.ControlPeriod

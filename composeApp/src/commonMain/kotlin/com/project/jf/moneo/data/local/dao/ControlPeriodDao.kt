@@ -1,7 +1,7 @@
 package com.project.jf.moneo.data.local.dao
 
-import ControlPeriodEntity
 import androidx.room.*
+import com.project.jf.moneo.data.local.entity.ControlPeriodEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

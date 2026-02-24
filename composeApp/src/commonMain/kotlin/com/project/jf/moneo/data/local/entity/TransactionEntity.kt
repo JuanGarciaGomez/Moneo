@@ -1,6 +1,5 @@
 package com.project.jf.moneo.data.local.entity
 
-import ControlPeriodEntity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -30,7 +29,7 @@ data class TransactionEntity(
     val notes: String? = null
 )
 
-fun TransactionEntity.toDomain(): Transaction{
+fun TransactionEntity.toDomain(): Transaction {
     return Transaction(
         id = id,
         controlPeriodId = controlPeriodId,
@@ -44,7 +43,7 @@ fun TransactionEntity.toDomain(): Transaction{
     )
 }
 
-fun Transaction.toData(): TransactionEntity{
+fun Transaction.toData(): TransactionEntity {
     return TransactionEntity(
         id = id,
         controlPeriodId = controlPeriodId,
@@ -57,4 +56,3 @@ fun Transaction.toData(): TransactionEntity{
         notes = notes
     )
 }
-

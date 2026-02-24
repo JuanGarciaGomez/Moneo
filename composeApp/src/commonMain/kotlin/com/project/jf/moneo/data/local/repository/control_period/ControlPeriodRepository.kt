@@ -1,6 +1,6 @@
 package com.project.jf.moneo.data.local.repository.control_period
 
-import ControlPeriodEntity
+import com.project.jf.moneo.data.local.entity.ControlPeriodEntity
 import kotlinx.coroutines.flow.Flow
 
 interface ControlPeriodRepository {
