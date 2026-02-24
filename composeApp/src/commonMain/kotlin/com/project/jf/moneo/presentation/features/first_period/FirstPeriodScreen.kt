@@ -1,4 +1,4 @@
-package com.project.jf.moneo.presentation.first_period
+package com.project.jf.moneo.presentation.features.first_period
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

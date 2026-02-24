@@ -1,4 +1,4 @@
-package com.project.jf.moneo.presentation.onboarding
+package com.project.jf.moneo.presentation.features.onboarding
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -13,9 +13,9 @@ import com.project.jf.moneo.domain.usecase.GetUserNameUseCase
 import com.project.jf.moneo.domain.usecase.SaveControlPeriodUseCase
 import com.project.jf.moneo.domain.usecase.SaveHasCompletedOnboardingUseCase
 import com.project.jf.moneo.domain.usecase.SaveUserNameUseCase
-import com.project.jf.moneo.presentation.home.HomeViewModel
-import com.project.jf.moneo.presentation.first_period.FirstPeriodViewModel
-import com.project.jf.moneo.presentation.onboarding.OnboardingViewModel
+import com.project.jf.moneo.presentation.features.home.HomeViewModel
+import com.project.jf.moneo.presentation.features.first_period.FirstPeriodViewModel
+import com.project.jf.moneo.presentation.features.onboarding.OnboardingViewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

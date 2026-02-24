@@ -1,4 +1,4 @@
-package com.project.jf.moneo.presentation.report
+package com.project.jf.moneo.presentation.features.report
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

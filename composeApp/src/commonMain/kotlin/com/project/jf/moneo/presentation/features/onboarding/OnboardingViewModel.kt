@@ -1,4 +1,4 @@
-package com.project.jf.moneo.presentation.onboarding
+package com.project.jf.moneo.presentation.features.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

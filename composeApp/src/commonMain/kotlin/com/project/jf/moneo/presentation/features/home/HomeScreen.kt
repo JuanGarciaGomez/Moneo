@@ -1,4 +1,4 @@
-package com.project.jf.moneo.presentation.home
+package com.project.jf.moneo.presentation.features.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

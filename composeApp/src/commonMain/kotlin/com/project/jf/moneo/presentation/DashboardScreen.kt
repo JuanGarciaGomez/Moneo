@@ -15,11 +15,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.project.jf.moneo.presentation.components.BaseScreen
 import com.project.jf.moneo.presentation.components.DashboardBottomBar
-import com.project.jf.moneo.presentation.home.HomeScreen
+import com.project.jf.moneo.presentation.features.home.HomeScreen
 import com.project.jf.moneo.presentation.model.BottomNavigationItems
 import com.project.jf.moneo.presentation.navigation.routes.DashboardRoute
-import com.project.jf.moneo.presentation.report.ReportsScreen
-import com.project.jf.moneo.presentation.setting.SettingsScreen
+import com.project.jf.moneo.presentation.features.report.ReportsScreen
+import com.project.jf.moneo.presentation.features.setting.SettingsScreen
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.app_name
 import org.jetbrains.compose.resources.stringResource

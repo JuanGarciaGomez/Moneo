@@ -1,4 +1,4 @@
-package com.project.jf.moneo.presentation.first_period
+package com.project.jf.moneo.presentation.features.first_period
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
