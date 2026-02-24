@@ -81,3 +81,16 @@ private fun DashboardTopBar() {
         }
     )
 }
+
+@Composable
+fun DashboardRouterPreview(content: @Composable () -> Unit) {
+    BaseScreen(
+        topBar = {
+            DashboardTopBar()
+        },
+        bottomBar = {
+            DashboardBottomBar(BottomNavigationItems.HOME) {}
+        },
+        content = content
+    )
+}

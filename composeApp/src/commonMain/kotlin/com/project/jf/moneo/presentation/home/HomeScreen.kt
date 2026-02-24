@@ -41,6 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.project.jf.moneo.domain.model.TransactionType
+import com.project.jf.moneo.presentation.DashboardRouterPreview
 import com.project.jf.moneo.presentation.extensions.toShortDateEs
 import com.project.jf.moneo.presentation.model.ControlPeriodUI
 import com.project.jf.moneo.presentation.model.TransactionUI
@@ -51,6 +53,7 @@ import moneo.composeapp.generated.resources.calendar
 import moneo.composeapp.generated.resources.dashboard_available
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -283,5 +286,64 @@ fun ControlPeriodSelector(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun HomePreview() {
+    DashboardRouterPreview{
+        HomeContent(
+            state = HomeState(
+                allPeriods = listOf(
+                    ControlPeriodUI(
+                        id = 1,
+                        name = "Nov-Dic",
+                        startDate = 120L,
+                        endDate = null
+                    )
+                ),
+                periodSelected = ControlPeriodUI(
+                    id = 1,
+                    name = "Nov-Dic",
+                    startDate = 120L,
+                    endDate = null
+                ),
+                transactions = listOf(
+                    TransactionUI(
+                        id = 1,
+                        controlPeriodId = 1L,
+                        title = "Donas",
+                        amount = 10000.0,
+                        date = 20440L,
+                        type = TransactionType.EXPENSE,
+                        category = "Comida",
+                        paymentMethod = "Pago de prueba"
+                    ),
+                    TransactionUI(
+                        id = 1,
+                        controlPeriodId = 1L,
+                        title = "Perro caliente",
+                        amount = 15000.0,
+                        date = 20441L,
+                        type = TransactionType.EXPENSE,
+                        category = "Comida",
+                        paymentMethod = "Pago de prueba"
+                    ),
+                    TransactionUI(
+                        id = 1,
+                        controlPeriodId = 1L,
+                        title = "Gasolina",
+                        amount = 1500000.0,
+                        date = 20442L,
+                        type = TransactionType.EXPENSE,
+                        category = "Carro",
+                        paymentMethod = "Pago de prueba"
+                    )
+                )
+            ),
+            handleIntent = {},
+            onNavigateToHistory = {}
+        )
     }
 }
