@@ -20,7 +20,6 @@ import com.project.jf.moneo.domain.model.TransactionType
 data class TransactionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val controlPeriodId: Long,
-    val title: String,
     val amount: Double,
     val date: Long,
     val type: TransactionType,
@@ -33,7 +32,6 @@ fun TransactionEntity.toDomain(): Transaction {
     return Transaction(
         id = id,
         controlPeriodId = controlPeriodId,
-        title = title,
         amount = amount,
         date = date,
         type = type,
@@ -47,7 +45,6 @@ fun Transaction.toData(): TransactionEntity {
     return TransactionEntity(
         id = id,
         controlPeriodId = controlPeriodId,
-        title = title,
         amount = amount,
         date = date,
         type = type,

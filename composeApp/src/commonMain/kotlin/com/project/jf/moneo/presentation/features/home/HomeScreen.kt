@@ -158,13 +158,14 @@ fun ItemCard(transaction: TransactionUI) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = transaction.title,
+                    text = transaction.category,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(2.dp))
+                val notes = if (!transaction.notes.isNullOrBlank())" - ${transaction.notes}" else ""
                 Text(
-                    text = "${transaction.date.toShortDateEs()} - ${transaction.category}",
+                    text = "${transaction.date.toShortDateEs()}$notes",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -313,17 +314,16 @@ fun HomePreview() {
                     TransactionUI(
                         id = 1,
                         controlPeriodId = 1L,
-                        title = "Donas",
                         amount = 10000.0,
                         date = 20440L,
                         type = TransactionType.EXPENSE,
                         category = "Comida",
-                        paymentMethod = "Pago de prueba"
+                        paymentMethod = "Pago de prueba",
+                        notes = "Perro caliente"
                     ),
                     TransactionUI(
                         id = 1,
                         controlPeriodId = 1L,
-                        title = "Perro caliente",
                         amount = 15000.0,
                         date = 20441L,
                         type = TransactionType.EXPENSE,
@@ -333,7 +333,6 @@ fun HomePreview() {
                     TransactionUI(
                         id = 1,
                         controlPeriodId = 1L,
-                        title = "Gasolina",
                         amount = 1500000.0,
                         date = 20442L,
                         type = TransactionType.EXPENSE,

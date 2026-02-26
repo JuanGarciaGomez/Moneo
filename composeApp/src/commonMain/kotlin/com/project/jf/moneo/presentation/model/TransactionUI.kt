@@ -6,7 +6,6 @@ import com.project.jf.moneo.domain.model.TransactionType
 data class TransactionUI(
     val id: Long = 0,
     val controlPeriodId: Long,
-    val title: String,
     val amount: Double,
     val date: Long,
     val type: TransactionType,
@@ -19,7 +18,6 @@ fun TransactionUI.toDomain(): Transaction {
     return Transaction(
         id = id,
         controlPeriodId = controlPeriodId,
-        title = title,
         amount = amount,
         date = date,
         type = type,
@@ -33,7 +31,6 @@ fun Transaction.toUI(): TransactionUI {
     return TransactionUI(
         id = id,
         controlPeriodId = controlPeriodId,
-        title = title,
         amount = amount,
         date = date,
         type = type,
