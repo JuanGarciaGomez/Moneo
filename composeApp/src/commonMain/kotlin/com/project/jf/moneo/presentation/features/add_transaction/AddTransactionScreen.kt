@@ -1,4 +1,4 @@
-package com.project.jf.moneo.presentation.components
+package com.project.jf.moneo.presentation.features.add_transaction
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,17 +14,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,54 +33,34 @@ import androidx.compose.ui.unit.sp
 import com.project.jf.moneo.domain.model.PaymentMethod
 import com.project.jf.moneo.domain.model.TransactionCategory
 import com.project.jf.moneo.domain.model.TransactionType
+import com.project.jf.moneo.presentation.components.DatePickerField
+import com.project.jf.moneo.presentation.components.HorizontalChipSelector
+import com.project.jf.moneo.presentation.components.TitleField
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.arrow_back
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+@Composable
+fun AddTransactionScreen(
+    viewModel: AddTransactionViewModel = koinViewModel(),
+) {
+    val state by viewModel.state.collectAsState()
+    AddTransactionBottomSheet(state = state, onIntent = viewModel::handleIntent)
+}
 
-data class AddTransactionState(
-    val amount: String = "0.00",
-    val selectedType: TransactionType = TransactionType.EXPENSE,
-    val categories: List<TransactionCategory> = defaultCategories(),
-    val selectedCategoryId: String? = defaultCategories().firstOrNull()?.id,
-    val paymentMethods: List<PaymentMethod> = defaultPaymentMethods(),
-    val selectedPaymentMethodId: String? = defaultPaymentMethods().firstOrNull()?.id,
-    val titleNote: String = ""
-)
-
-fun defaultCategories() = listOf(
-    TransactionCategory("food", "Comida y envíos"),
-    TransactionCategory("transport", "Transporte"),
-    TransactionCategory("rent", "Renta")
-)
-
-fun defaultPaymentMethods() = listOf(
-    PaymentMethod("card", "Tarjeta principal"),
-    PaymentMethod("bank", "Cuenta bancaria"),
-    PaymentMethod("cash", "Efectivo")
-)
-
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransactionBottomSheet(
-    onDismiss: () -> Unit,
-    onAddTransaction: (AddTransactionState) -> Unit,
-    onManageTransactionTypes: () -> Unit,
-    onAddNewCategory: () -> Unit,
-    onAddNewPaymentMethod: () -> Unit,
-    modifier: Modifier = Modifier,
-    initialState: AddTransactionState = AddTransactionState()
+    state: AddTransactionUiState,
+    onIntent: (AddTransactionIntent) -> Unit
 ) {
-    var state by remember { mutableStateOf(initialState) }
-
     ModalBottomSheet(
-        onDismissRequest = onDismiss,
+        onDismissRequest = { onIntent(AddTransactionIntent.OnDismiss) },
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         dragHandle = {
             Box(
@@ -95,30 +72,20 @@ fun AddTransactionBottomSheet(
                     .background(Color.DarkGray)
             )
         },
-        modifier = modifier
     ) {
-        AddTransactionContent(
+        AddTransactionBottomSheetContent(
             state = state,
-            onStateChange = { state = it },
-            onDismiss = onDismiss,
-            onAdd = { onAddTransaction(state) },
-            onManageTransactionTypes = onManageTransactionTypes,
-            onAddNewCategory = onAddNewCategory,
-            onAddNewPaymentMethod = onAddNewPaymentMethod
+            onIntent = onIntent
         )
+
     }
 }
 
 @OptIn(ExperimentalTime::class)
 @Composable
-fun AddTransactionContent(
-    state: AddTransactionState,
-    onStateChange: (AddTransactionState) -> Unit,
-    onDismiss: () -> Unit,
-    onAdd: () -> Unit,
-    onManageTransactionTypes: () -> Unit,
-    onAddNewCategory: () -> Unit,
-    onAddNewPaymentMethod: () -> Unit
+fun AddTransactionBottomSheetContent(
+    state: AddTransactionUiState,
+    onIntent: (AddTransactionIntent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -127,41 +94,45 @@ fun AddTransactionContent(
             .padding(bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        TransactionHeader(onDismiss = onDismiss)
+        TransactionHeader(onIntent = onIntent)
 
-        AmountDisplay(amount = state.amount)
+        AmountDisplay(amount = state.transactionState.amount.toString())
 
         HorizontalChipSelector(
             items = TransactionType.entries.map { transactionType -> transactionType.name.lowercase() }
                 .toList(),
-            selectedId = state.selectedType.name,
-            onSelect = { onStateChange(state.copy(selectedType = TransactionType.valueOf(it))) },
+            selectedId = state.transactionState.type?.name,
+            onSelect = { },
             onAdd = {},
-            addLabel = "",
+            addLabel = null,
             itemId = { it },
             itemLabel = { it }
         )
 
         TransactionSectionLabel(label = "Categoría")
+
         HorizontalChipSelector(
-            items = state.categories,
-            selectedId = state.selectedCategoryId,
-            onSelect = { onStateChange(state.copy(selectedCategoryId = it)) },
-            onAdd = onAddNewCategory,
+            items = TransactionCategory.entries.map { transactionCategory -> transactionCategory.name.lowercase() }
+                .toList(),
+            selectedId = state.transactionState.category?.name,
+            onSelect = { },
+            onAdd = {},
             addLabel = "Agregar nueva categoría",
-            itemId = { it.id },
-            itemLabel = { it.name }
+            itemId = { it },
+            itemLabel = { it }
         )
 
         TransactionSectionLabel(label = "Método de pago")
+
         HorizontalChipSelector(
-            items = state.paymentMethods,
-            selectedId = state.selectedPaymentMethodId,
-            onSelect = { onStateChange(state.copy(selectedPaymentMethodId = it)) },
-            onAdd = onAddNewPaymentMethod,
+            items = PaymentMethod.entries.map { transactionCategory -> transactionCategory.name.lowercase() }
+                .toList(),
+            selectedId = state.transactionState.paymentMethod?.name,
+            onSelect = { },
+            onAdd = {},
             addLabel = "Agregar nuevo método de pago",
-            itemId = { it.id },
-            itemLabel = { it.name }
+            itemId = { it },
+            itemLabel = { it }
         )
 
         TransactionSectionLabel(label = "Fecha de la transacción")
@@ -173,16 +144,17 @@ fun AddTransactionContent(
 
         TransactionSectionLabel(label = "Título / nota")
         TitleField(
-            value = state.titleNote,
-            onValueChange = { onStateChange(state.copy(titleNote = it)) }
+            value = state.transactionState.notes.orEmpty(),
+            onValueChange = {  }
         )
 
-        AddButton(onClick = onAdd)
+        AddButton(onClick = onIntent)
+
     }
 }
 
 @Composable
-private fun TransactionHeader(onDismiss: () -> Unit) {
+private fun TransactionHeader(onIntent: (AddTransactionIntent) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -196,7 +168,7 @@ private fun TransactionHeader(onDismiss: () -> Unit) {
             )
         )
         IconButton(
-            onClick = onDismiss,
+            onClick = { onIntent(AddTransactionIntent.OnDismiss) },
             modifier = Modifier
                 .size(32.dp)
                 .clip(CircleShape)
@@ -255,9 +227,9 @@ private fun TransactionSectionLabel(label: String) {
 }
 
 @Composable
-private fun AddButton(onClick: () -> Unit) {
+private fun AddButton(onClick: (AddTransactionIntent) -> Unit) {
     Button(
-        onClick = onClick,
+        onClick = { onClick(AddTransactionIntent.OnAdd) },
         modifier = Modifier
             .fillMaxWidth()
             .height(52.dp),
@@ -273,7 +245,6 @@ private fun AddButton(onClick: () -> Unit) {
     }
 }
 
-
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun AddTransactionContentPreview() {
@@ -284,14 +255,9 @@ fun AddTransactionContentPreview() {
                 .background(Color.White)
                 .padding(top = 16.dp)
         ) {
-            AddTransactionContent(
-                state = AddTransactionState(),
-                onStateChange = {},
-                onDismiss = {},
-                onAdd = {},
-                onManageTransactionTypes = {},
-                onAddNewCategory = {},
-                onAddNewPaymentMethod = {}
+            AddTransactionBottomSheetContent(
+                state = AddTransactionUiState(),
+                onIntent = {}
             )
         }
     }

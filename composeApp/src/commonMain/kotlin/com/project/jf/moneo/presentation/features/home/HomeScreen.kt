@@ -41,6 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.project.jf.moneo.domain.model.PaymentMethod
+import com.project.jf.moneo.domain.model.TransactionCategory
 import com.project.jf.moneo.domain.model.TransactionType
 import com.project.jf.moneo.presentation.DashboardRouterPreview
 import com.project.jf.moneo.presentation.extensions.toShortDateEs
@@ -158,14 +160,14 @@ fun ItemCard(transaction: TransactionUI) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = transaction.category,
+                    text = transaction.category?.displayName.orEmpty(),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 val notes = if (!transaction.notes.isNullOrBlank())" - ${transaction.notes}" else ""
                 Text(
-                    text = "${transaction.date.toShortDateEs()}$notes",
+                    text = "${transaction.date?.toShortDateEs()}$notes",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -317,8 +319,8 @@ fun HomePreview() {
                         amount = 10000.0,
                         date = 20440L,
                         type = TransactionType.EXPENSE,
-                        category = "Comida",
-                        paymentMethod = "Pago de prueba",
+                        category = TransactionCategory.FOOD,
+                        paymentMethod = PaymentMethod.DIGITAL_WALLET,
                         notes = "Perro caliente"
                     ),
                     TransactionUI(
@@ -327,8 +329,8 @@ fun HomePreview() {
                         amount = 15000.0,
                         date = 20441L,
                         type = TransactionType.EXPENSE,
-                        category = "Comida",
-                        paymentMethod = "Pago de prueba"
+                        category = TransactionCategory.SHOPPING,
+                        paymentMethod = PaymentMethod.SAVINGS_ACCOUNT,
                     ),
                     TransactionUI(
                         id = 1,
@@ -336,8 +338,8 @@ fun HomePreview() {
                         amount = 1500000.0,
                         date = 20442L,
                         type = TransactionType.EXPENSE,
-                        category = "Carro",
-                        paymentMethod = "Pago de prueba"
+                        category = TransactionCategory.EDUCATION,
+                        paymentMethod = PaymentMethod.CREDIT_CARD,
                     )
                 )
             ),

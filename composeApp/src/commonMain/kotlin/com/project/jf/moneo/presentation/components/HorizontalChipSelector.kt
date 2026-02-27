@@ -1,8 +1,10 @@
 package com.project.jf.moneo.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +19,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.project.jf.moneo.domain.model.TransactionType
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun <T> HorizontalChipSelector(
@@ -24,7 +28,7 @@ fun <T> HorizontalChipSelector(
     selectedId: String?,
     onSelect: (String) -> Unit,
     onAdd: () -> Unit,
-    addLabel: String,
+    addLabel: String? = null,
     itemId: (T) -> String,
     itemLabel: (T) -> String,
     modifier: Modifier = Modifier
@@ -49,17 +53,43 @@ fun <T> HorizontalChipSelector(
                 )
             }
         }
-
-        Text(
-            text = addLabel,
-            style = TextStyle(
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.SemiBold
-            ),
-            modifier = Modifier
-                .align(Alignment.End)
-                .clickable { onAdd() }
-        )
+        addLabel?.let {
+            Text(
+                text = it,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                ),
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .clickable { onAdd() }
+            )
+        }
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+fun HorizontalChipSelectorPreview() {
+    MaterialTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+        ) {
+            HorizontalChipSelector(
+                items = TransactionType.entries.map { transactionType -> transactionType.name.lowercase() }
+                    .toList(),
+                selectedId = TransactionType.EXPENSE.name ,
+                onSelect = { },
+                onAdd = {},
+                addLabel = null,
+                itemId = { it },
+                itemLabel = { it }
+            )
+
+        }
+    }
+
 }
