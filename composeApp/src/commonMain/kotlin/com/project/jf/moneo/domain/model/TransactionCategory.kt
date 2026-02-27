@@ -1,6 +1,13 @@
 package com.project.jf.moneo.domain.model
 
-data class TransactionCategory(
-    val id: String,
-    val name: String
-)
+enum class TransactionCategory(val displayName: String) {
+    FOOD("Alimentación"),
+    TRANSPORTATION("Transporte"),
+    HOUSING("Vivienda/Alquiler"),
+    SERVICES("Servicios Públicos"),
+    ENTERTAINMENT("Entretenimiento"),
+    HEALTH("Salud"),
+    SHOPPING("Compras"),
+    EDUCATION("Educación"),
+    OTHERS("Otros"),
+}

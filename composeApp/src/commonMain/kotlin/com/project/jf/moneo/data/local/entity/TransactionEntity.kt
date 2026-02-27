@@ -3,7 +3,9 @@ package com.project.jf.moneo.data.local.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.project.jf.moneo.domain.model.PaymentMethod
 import com.project.jf.moneo.domain.model.Transaction
+import com.project.jf.moneo.domain.model.TransactionCategory
 import com.project.jf.moneo.domain.model.TransactionType
 
 @Entity(
@@ -23,8 +25,8 @@ data class TransactionEntity(
     val amount: Double,
     val date: Long,
     val type: TransactionType,
-    val category: String,
-    val paymentMethod: String,
+    val category: TransactionCategory,
+    val paymentMethod: PaymentMethod,
     val notes: String? = null
 )
 

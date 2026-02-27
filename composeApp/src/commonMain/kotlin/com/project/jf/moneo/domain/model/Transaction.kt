@@ -6,7 +6,7 @@ data class Transaction(
     val amount: Double,
     val date: Long,
     val type: TransactionType,
-    val category: String,
-    val paymentMethod: String,
+    val category: TransactionCategory,
+    val paymentMethod: PaymentMethod,
     val notes: String? = null
 )

@@ -1,6 +1,8 @@
 package com.project.jf.moneo.presentation.model
 
+import com.project.jf.moneo.domain.model.PaymentMethod
 import com.project.jf.moneo.domain.model.Transaction
+import com.project.jf.moneo.domain.model.TransactionCategory
 import com.project.jf.moneo.domain.model.TransactionType
 
 data class TransactionUI(
@@ -9,8 +11,8 @@ data class TransactionUI(
     val amount: Double,
     val date: Long,
     val type: TransactionType,
-    val category: String,
-    val paymentMethod: String,
+    val category: TransactionCategory,
+    val paymentMethod: PaymentMethod,
     val notes: String? = null
 )
 
