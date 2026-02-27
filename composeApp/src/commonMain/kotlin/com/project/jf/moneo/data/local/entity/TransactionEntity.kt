@@ -20,13 +20,13 @@ import com.project.jf.moneo.domain.model.TransactionType
     ]
 )
 data class TransactionEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val controlPeriodId: Long,
-    val amount: Double,
-    val date: Long,
-    val type: TransactionType,
-    val category: TransactionCategory,
-    val paymentMethod: PaymentMethod,
+    @PrimaryKey(autoGenerate = true) val id: Long? = 0,
+    val controlPeriodId: Long? = null,
+    val amount: Double? = null,
+    val date: Long? = null,
+    val type: TransactionType? = null,
+    val category: TransactionCategory? = null,
+    val paymentMethod: PaymentMethod? = null,
     val notes: String? = null
 )
 
