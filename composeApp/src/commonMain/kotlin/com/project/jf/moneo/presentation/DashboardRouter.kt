@@ -5,6 +5,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -15,11 +18,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.project.jf.moneo.presentation.components.BaseScreen
 import com.project.jf.moneo.presentation.components.DashboardBottomBar
+import com.project.jf.moneo.presentation.features.add_transaction.AddTransactionScreen
 import com.project.jf.moneo.presentation.features.home.HomeScreen
-import com.project.jf.moneo.presentation.model.BottomNavigationItems
-import com.project.jf.moneo.presentation.navigation.routes.DashboardRoute
 import com.project.jf.moneo.presentation.features.report.ReportsScreen
 import com.project.jf.moneo.presentation.features.setting.SettingsScreen
+import com.project.jf.moneo.presentation.model.BottomNavigationItems
+import com.project.jf.moneo.presentation.navigation.routes.DashboardRoute
 import moneo.composeapp.generated.resources.Res
 import moneo.composeapp.generated.resources.app_name
 import org.jetbrains.compose.resources.stringResource
@@ -30,6 +34,7 @@ fun DashboardRouter() {
     val nestedNavController = rememberNavController()
     val navBackStackEntry by nestedNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    var showAddTransaction by remember { mutableStateOf(false) }
     val selectedItem = BottomNavigationItems.entries.find { item ->
         currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
     } ?: BottomNavigationItems.HOME
@@ -49,7 +54,12 @@ fun DashboardRouter() {
                 }
             }
         },
+        onFloatingActionButtonClick = {
+            showAddTransaction = true
+        },
         content = {
+            if (showAddTransaction) AddTransactionScreen(onDismiss = { showAddTransaction = false })
+
             NavHost(
                 navController = nestedNavController,
                 startDestination = DashboardRoute.Home

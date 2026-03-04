@@ -13,6 +13,7 @@ import com.project.jf.moneo.domain.usecase.GetUserNameUseCase
 import com.project.jf.moneo.domain.usecase.SaveControlPeriodUseCase
 import com.project.jf.moneo.domain.usecase.SaveHasCompletedOnboardingUseCase
 import com.project.jf.moneo.domain.usecase.SaveUserNameUseCase
+import com.project.jf.moneo.presentation.features.add_transaction.AddTransactionViewModel
 import com.project.jf.moneo.presentation.features.home.HomeViewModel
 import com.project.jf.moneo.presentation.features.first_period.FirstPeriodViewModel
 import com.project.jf.moneo.presentation.features.onboarding.OnboardingViewModel
@@ -30,6 +31,7 @@ val commonModule = module {
     factory { GetAllControlPeriodsUseCase(get()) }
     factory { GetTransactionsForPeriodUseCase(get()) }
     factory { HomeViewModel(get(), get()) }
+    factory { AddTransactionViewModel() }
     single { UserPreferencesRepository() }
     single { get<MoneoDatabase>().controlPeriodDao() }
     single { get<MoneoDatabase>().transactionDao() }

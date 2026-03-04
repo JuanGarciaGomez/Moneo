@@ -12,7 +12,7 @@ import com.project.jf.moneo.presentation.features.onboarding.OnboardingScreen
 @Composable
 fun NavigationWrapper() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = MainRoute.Onboarding) {
+    NavHost(navController = navController, startDestination = MainRoute.Dashboard) {
         composable<MainRoute.Onboarding> {
             OnboardingScreen {
                 navController.navigate(MainRoute.FirstPeriod)
@@ -27,7 +27,6 @@ fun NavigationWrapper() {
                 navController.popBackStack()
             }
         }
-
         composable<MainRoute.Dashboard> {
             DashboardRouter()
         }

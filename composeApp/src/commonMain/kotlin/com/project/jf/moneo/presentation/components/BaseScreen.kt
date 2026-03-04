@@ -20,7 +20,8 @@ fun BaseScreen(
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     showFloatingActionButton: Boolean = true,
-    content: @Composable () -> Unit
+    onFloatingActionButtonClick: () -> Unit = {},
+    content: @Composable () -> Unit,
 ) {
     Scaffold(
         topBar = topBar,
@@ -28,7 +29,7 @@ fun BaseScreen(
         floatingActionButton = {
             if (showFloatingActionButton) {
                 FloatingActionButton(
-                    onClick = { /* Acción de añadir */ },
+                    onClick = { onFloatingActionButtonClick() },
                     shape = CircleShape,
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = Color.White
