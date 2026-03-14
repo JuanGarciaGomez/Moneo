@@ -50,6 +50,7 @@ fun AddTransactionScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransactionBottomSheet(
     state: AddTransactionUiState,
@@ -57,6 +58,7 @@ fun AddTransactionBottomSheet(
 ) {
     ModalBottomSheet(
         onDismissRequest = { onIntent(AddTransactionIntent.OnDismiss) },
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         dragHandle = {
             Box(
